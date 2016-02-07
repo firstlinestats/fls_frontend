@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>First Line Stats</title>
+    <!-- Bootstrap core CSS -->
+    {% load staticfiles %}
+    <link rel='shortcut icon' type='image/x-icon' href="{% static "images/favicon.png" %}" />
+    <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
+    <link href="{% static "css/fls.css" %}" rel="stylesheet">
+    {% block page_css %}{% endblock %}
+  </head>
+  <body>
+    {% include "wrappers/navigation.html" %}
+    {% block content %}{% endblock %}
+    <script src="{% static "js/jquery-2.2.0.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.js" %}"></script>
+    {% block page_js %}{% endblock %}
+  </body>
+</html>

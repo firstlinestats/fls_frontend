@@ -1,0 +1,16 @@
+/* 
+	Main CSS file for FLS.com
+*/
+.fls-logo {
+	height: 79px;
+	margin-top: -20px;
+}
+.vcenter-parent {
+    display: table;
+    table-layout: fixed;
+}
+.vcenter-child {
+    display: table-cell;
+    vertical-align: middle;
+    float: none;
+}
