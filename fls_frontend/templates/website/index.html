@@ -1,211 +1,175 @@
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>First Line Stats</title>
-    <!-- Bootstrap core CSS -->
-    {% load staticfiles %}
-    <link rel='shortcut icon' type='image/x-icon' href="{% static "images/favicon.png" %}" />
-    <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
-    <link href="{% static "css/main.css" %}" rel="stylesheet">
-  </head>
-
-  <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <div class="navbar-brand" href="#">
-            <a href="#"><img class="fls-logo" src="{% static "images/logo_text.png" %}"></a>
-          </div>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#players">Players</a></li>
-            <li><a href="#teams">Teams</a></li>
-            <li><a href="#games">Games</a></li>
-            <li><a href="#aboutus">About Us</a></li>
-          </ul>
-        </div>
+{% extends "wrappers/wrapper.html" %}
+{% block content %}
+  {% load staticfiles %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Recent Games</h2>
+        <table class="table table-striped table-hover ">
+          <thead>
+            <tr>
+              <th>Game Date</th>
+              <th>Session</th>
+              <th>Home</th>
+              <th class="text-center">Score</th>
+              <th>Away</th>
+              <th>Corsi</th>
+              <th>Status</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for game in game_list %}
+              <tr>
+                <td>{{ game.dateTime|date }}</td>
+                <td>{{ game.gameType }}</td>
+                <td><img height="17" width="17" src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ game.homeTeam.id }}">{{ game.homeTeam }}</a></td>
+                <td class="text-center">{{ game.homeScore }} - {{ game.awayScore }}</td>
+                <td><img height="17" width="17" src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.awayTeam.id }}">{{ game.awayTeam }}</a></td>
+                <td>TBD</td>
+                <td>{{ game.gameState }}</td>
+                <td>{{ game.dateTime|time }}</td>
+                <td>{{ game.endDateTime|time }}</td>
+                <td class='text-right'><a href="/games/{{ game.gamePk }}">Game Details</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
-
-    <div class="container">
+  </div>
+  <div class="container">
+    <h2>Division Standings</h2>
+    <div class="row">
       <div class="row">
         <div class="col-md-12">
-          <h2>Recent Games</h2>
-          <table class="table table-striped table-hover ">
-                <thead>
-                  <tr>
-                    <th>Game Date</th>
-                    <th>Session</th>
-                    <th>Home</th>
-                    <th class="text-center">Score</th>
-                    <th>Away</th>
-                    <th>Corsi</th>
-                    <th>Status</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for game in game_list %}
-                    <tr>
-                      <td>{{ game.dateTime|date }}</td>
-                      <td>{{ game.gameType }}</td>
-                      <td><img height="17" width="17" src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ game.homeTeam.id }}">{{ game.homeTeam }}</a></td> 
-                      <td class="text-center">{{ game.homeScore }} - {{ game.awayScore }}</td>
-                      <td><img height="17" width="17" src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.awayTeam.id }}">{{ game.awayTeam }}</a></td> 
-                      <td>TBD</td>
-                      <td>{{ game.gameState }}</td>
-                      <td>{{ game.dateTime|time }}</td>
-                      <td>{{ game.endDateTime|time }}</td>
-                      <td class='text-right'><a href="/games/{{ game.gamePk }}">Game Details</a></td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-            </table>
+          <h3 class="text-center">Eastern</h3>
         </div>
       </div>
-      <div class="container">
-        <h2>Division Standings</h2>     
-        <div class="row">
-          <div class="row">
-            <div class="col-md-12">
-              <h3 class="text-center">Eastern</h3>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <h4 class="text-center">Atlantic</h4>
-            <div class="well bs-component">
-              <table class="table table-striped table-hover ">
-                <thead>
+      <div class="col-md-6">
+        <h4 class="text-center">Atlantic</h4>
+        <div class="well bs-component">
+          <table class="table table-striped table-hover ">
+            <thead>
+              <tr>
+                <th>Team Name</th>
+                <th>Games Played</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team in teams %}
+                {% if team.division == 'A' %}
                   <tr>
-                    <th>Team Name</th>
-                    <th>Games Played</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Points</th>
+                    <td><img height="17" width="17" src='{% with 'images/team/'|add:team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.id }}">{{ team.name }}</a></td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {% for team in teams %}
-                    {% if team.division == 'A' %}
-                      <tr>
-                        <td><img height="17" width="17" src='{% with 'images/team/'|add:team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.id }}">{{ team.name }}</a></td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
-                      {% endif %}
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <h4 class="text-center">Metropolitan</h4>
-            <div class="well bs-component">
-              <table class="table table-striped table-hover ">
-                <thead>
-                  <tr>
-                    <th>Team Name</th>
-                    <th>Games Played</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Points</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for team in teams %}
-                    {% if team.division == 'M' %}
-                      <tr>
-                        <td><img height="17" width="17" src='{% with 'images/team/'|add:team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.id }}">{{ team.name }}</a></td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
-                      {% endif %}
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        <div class="row">
-          <div class="row">
-            <div class="col-md-12">
-              <h3 class="text-center">Western</h3>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <h4 class="text-center">Central</h4>
-            <div class="well bs-component">
-              <table class="table table-striped table-hover ">
-                <thead>
+      </div>
+      <div class="col-md-6">
+        <h4 class="text-center">Metropolitan</h4>
+        <div class="well bs-component">
+          <table class="table table-striped table-hover ">
+            <thead>
+              <tr>
+                <th>Team Name</th>
+                <th>Games Played</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team in teams %}
+                {% if team.division == 'M' %}
                   <tr>
-                    <th>Team Name</th>
-                    <th>Games Played</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Points</th>
+                    <td><img height="17" width="17" src='{% with 'images/team/'|add:team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.id }}">{{ team.name }}</a></td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {% for team in teams %}
-                    {% if team.division == 'C' %}
-                      <tr>
-                        <td><img height="17" width="17" src='{% with 'images/team/'|add:team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.id }}">{{ team.name }}</a></td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
-                      {% endif %}
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <h4 class="text-center">Pacific</h4>
-            <div class="well bs-component">
-              <table class="table table-striped table-hover ">
-                <thead>
-                  <tr>
-                    <th>Team Name</th>
-                    <th>Games Played</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Points</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for team in teams %}
-                    {% if team.division == 'P' %}
-                      <tr>
-                        <td><img height="17" width="17" src='{% with 'images/team/'|add:team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.id }}">{{ team.name }}</a></td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
-                      {% endif %}
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-    <script src="{% static "js/jquery-2.2.0.min.js" %}"></script>
-    <script src="{% static "js/bootstrap.js" %}"></script
-  </body>
-</html>
+    <div class="row">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="text-center">Western</h3>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h4 class="text-center">Central</h4>
+        <div class="well bs-component">
+          <table class="table table-striped table-hover ">
+            <thead>
+              <tr>
+                <th>Team Name</th>
+                <th>Games Played</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team in teams %}
+                {% if team.division == 'C' %}
+                  <tr>
+                    <td><img height="17" width="17" src='{% with 'images/team/'|add:team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.id }}">{{ team.name }}</a></td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h4 class="text-center">Pacific</h4>
+        <div class="well bs-component">
+          <table class="table table-striped table-hover ">
+            <thead>
+              <tr>
+                <th>Team Name</th>
+                <th>Games Played</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team in teams %}
+                {% if team.division == 'P' %}
+                  <tr>
+                    <td><img height="17" width="17" src='{% with 'images/team/'|add:team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.id }}">{{ team.name }}</a></td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

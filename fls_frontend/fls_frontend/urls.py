@@ -19,5 +19,10 @@ from django.views.generic.base import TemplateView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('website.urls'))
+    url(r'^', include('website.urls')),
+    url(r'^about/', include('website.urls')),
+    url(r'^players/', include('player.urls')),
+    url(r'^teams/', include('team.urls')),
+    url(r'^games/', include('playbyplay.urls'))
+
 ]
