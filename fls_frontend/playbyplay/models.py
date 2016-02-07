@@ -20,11 +20,30 @@ class Game(models.Model):
     awayScore = models.IntegerField(blank=True, null=True)
     homeShots = models.IntegerField(blank=True, null=True)
     awayShots = models.IntegerField(blank=True, null=True)
+    homePPGoals = models.IntegerField(blank=True, null=True)
+    awayPPGoals = models.IntegerField(blank=True, null=True)
+    homePPOpportunities = models.IntegerField(blank=True, null=True)
+    awayPPOpportunities = models.IntegerField(blank=True, null=True)
+    homeBlocked = models.IntegerField(blank=True, null=True)
+    awayBlocked = models.IntegerField(blank=True, null=True)
+    homePIM = models.IntegerField(blank=True, null=True)
+    awayPIM = models.IntegerField(blank=True, null=True)
 
     def __unicode__(self):
         if self.homeScore is not None:
             return self.homeTeam.name + " " + str(self.homeScore) + "-" + \
                 str(self.awayScore) + " " + self.awayTeam.name + " " + str(self.dateTime)
+
+
+class GamePeriod(models.Model):
+    game = models.ForeignKey(Game)
+    period = models.IntegerField()
+    startTime = models.TimeField(null=True, blank=True)
+    endTime = models.TimeField(null=True, blank=True)
+    homeScore = models.IntegerField(null=True, blank=True)
+    awayScore = models.IntegerField(null=True, blank=True)
+    homeShots = models.IntegerField(null=True, blank=True)
+    awayShots = models.IntegerField(null=True, blank=True)
 
 
 class PlayByPlay(models.Model):

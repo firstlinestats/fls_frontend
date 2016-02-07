@@ -30,15 +30,24 @@ def ingest_pbp():
         if game.gameState not in ["1", "2", "8", "9"]:
             j = json.loads(api_calls.get_game(game.gamePk))
             print j.keys()
+            # Update gameData
+            gd = j["gameData"]
+            game.dateTime = gd["datetime"]["dateTime"]
+            game.endDateTime = gd["datetime"]["endDateTime"]
+            game.gameState = gd["status"]["codedGameState"]
             # liveData
-
+            ld = j["liveData"]
+            # Get linescore information
+            lineScore = ld["linescore"]
+            game.homeScore = lineScore["teams"]["home"]["goals"]
+            game.awayScore = lineScore["teams"]["away"]["goals"]
+            game.homeShots = lineScore["teams"]["home"]["shotsOnGoal"]
+            game.awayShot = lineScore["teams"]["away"]["shotsOnGoal"]
+            # Get boxscore information
             # link
-
-            # gameData
 
             # gamePk
 
-            # metaData
             break
 
 
