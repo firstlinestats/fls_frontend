@@ -59,15 +59,14 @@ class GamePeriod(models.Model):
 
 class PlayByPlay(models.Model):
     gamePk = models.ForeignKey(Game)
-    link = models.URLField(null=True, blank=True)
-    timeStamp = models.CharField(max_length=20, null=True, blank=True)
-    gameState = models.CharField(max_length=1, choices=constants.gameStates)
+    eventId = models.IntegerField(null=True, blank=True)
     period = models.IntegerField()
     periodTime = models.TimeField()
     dateTime = models.DateTimeField(null=True, blank=True)
     playType = models.CharField(max_length=15, choices=constants.playTypes)
     playDescription = models.CharField(max_length=50, null=True, blank=True)
-    shotType = models.CharField(max_length=12, choices=constants.shotTypes)
+    shotType = models.CharField(max_length=12, choices=constants.shotTypes, null=True, blank=True)
+    penaltyType = models.CharField(max_length=12, null=True, blank=True)
     penaltySeverity = models.CharField(max_length=50, null=True, blank=True)
     penaltyMinutes = models.IntegerField(null=True, blank=True)
     homeScore = models.IntegerField()
@@ -75,6 +74,7 @@ class PlayByPlay(models.Model):
     xcoord = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
     ycoord = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
     timeOnIce = models.IntegerField(null=True, blank=True)
+    strength = models.CharField(max_length=20, null=True, blank=True)
 
     class Meta:
         verbose_name = "Play By Play"

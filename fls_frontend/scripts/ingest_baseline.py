@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "fls_frontend"))
 sys.path.append("../")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fls_frontend.settings")
 from django.conf import settings
+from django.db.transaction import commit_on_success
 
 django.setup()
 
@@ -25,18 +26,59 @@ def main():
     ingest_pbp()
 
 
+@commit_on_success
 def ingest_pbp():
+    players = {}
+    tplayers = pmodels.Player.objects.all()
+    for t in tplayers:
+        players[t.id] = t
     for game in pbpmodels.Game.objects.all().order_by("gamePk"):
         if game.gameState not in ["1", "2", "8", "9"]:
             j = json.loads(api_calls.get_game(game.gamePk))
-            print j.keys()
-            # Update gameData
             gd = j["gameData"]
+            # Player Info
+            pinfo = gd["players"]
+            for sid in pinfo: # I swear that's not a Crosby reference
+                iid = int(sid.replace("ID", ""))
+                if iid not in players:
+                    player = ingest_player(pinfo[sid])
+                    players[player.id] = player
+            # liveData
+            ld = j["liveData"]
+            # Plays
+            for play in ld["plays"]["allPlays"]:
+                about = play["about"]
+                pplayers = play["players"]
+                result = play["result"]
+                coordinates = play["coordinates"]
+                p, created = pbpmodels.PlayByPlay.objects.get_or_create(gamePk=game, eventId=about["eventIdx"])
+                p.period = about["period"]
+                p.periodTime = about["periodTime"]
+                p.dateTime = about["dateTime"]
+                p.playType = result["eventTypeId"]
+                p.playDescription = result["description"]
+                if "secondaryType" in result:
+                    if p.playType == "PENALTY":
+                        p.penaltyType = result["secondaryType"]
+                    else:
+                        p.shotType = result["secondaryType"]
+                if p.playType == "PENALTY":
+                    p.penaltySeverity = result["penaltySeverity"]
+                    p.penaltyMinutes = result["penaltyMinutes"]
+                if "strength" in result:
+                    p.strength = result["strength"]["code"]
+                if "x" in coordinates:
+                    p.xcoord = coordinates["x"]
+                    p.ycoord = coordinates["y"]
+                p.save()
+                for pp in pplayers:
+                    poi = pbpmodels.PlayerOnIce.objects.get_or_create(play=p, game=game, player_id=pp["id"])
+                    poi.player_type = pp["playerType"]
+                    poi.save()
+            # Update gameData
             game.dateTime = gd["datetime"]["dateTime"]
             game.endDateTime = gd["datetime"]["endDateTime"]
             game.gameState = gd["status"]["codedGameState"]
-            # liveData
-            ld = j["liveData"]
             # Get linescore information
             lineScore = ld["linescore"]
             game.homeScore = lineScore["teams"]["home"]["goals"]
@@ -81,11 +123,9 @@ def ingest_pbp():
             game.awayGiveaways = away["giveaways"]
             game.homeHits = home["hits"]
             game.awayHits = away["hits"]
-            # link
-
-            # gamePk
-
+            game.save()
             break
+        break
 
 
 def get_woi_players():
