@@ -162,10 +162,10 @@ def ingest_pbp():
                 except:
                     s = pbpmodels.Shootout()
                     s.game = game
-                s.awayScores = sinfo["away"]["goals"]
-                s.awayAttempts = sinfo["away"]["shotsOnGoal"]
-                s.homeScores = sinfo["home"]["goals"]
-                s.homeAttempts = sinfo["home"]["shotsOnGoal"]
+                s.awayScores = sinfo["away"]["scores"]
+                s.awayAttempts = sinfo["away"]["attempts"]
+                s.homeScores = sinfo["home"]["scores"]
+                s.homeAttempts = sinfo["home"]["attempts"]
                 allshootouts.append(s)
                 #s.save()
             # Get boxscore information
