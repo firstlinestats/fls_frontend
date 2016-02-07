@@ -26,10 +26,14 @@ class PlayerOnIceAdmin(admin.ModelAdmin):
 class GameScratchAdmin(admin.ModelAdmin):
     pass
 
+
+class GamePeriodAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(models.PlayByPlay, PlayByPlayAdmin)
 admin.site.register(models.Game, GameAdmin)
 admin.site.register(models.PlayerGameStats, PlayerGameStatsAdmin)
 admin.site.register(models.Shootout, ShootoutAdmin)
 admin.site.register(models.PlayerOnIce, PlayerOnIceAdmin)
 admin.site.register(models.GameScratch, GameScratchAdmin)
-
+admin.site.register(models.GamePeriod, GamePeriodAdmin)
