@@ -1,0 +1,107 @@
+from __future__ import unicode_literals
+
+from django.db import models
+
+import constants
+
+
+class Game(models.Model):
+    gamePk = models.IntegerField(primary_key=True)
+    link = models.URLField()
+    gameType = models.CharField(max_length=2, choices=constants.gameTypes)
+    season = models.IntegerField()
+    dateTime = models.DateTimeField(null=True, blank=True)
+    endDateTime = models.DateTimeField(null=True, blank=True)
+    awayTeam = models.ForeignKey("team.Team", related_name="awayTeam")
+    homeTeam = models.ForeignKey("team.Team", related_name="homeTeam")
+    venue = models.ForeignKey("team.Venue")
+    gameState = models.CharField(max_length=1, choices=constants.gameStates)
+    homeScore = models.IntegerField(blank=True, null=True)
+    awayScore = models.IntegerField(blank=True, null=True)
+    homeShots = models.IntegerField(blank=True, null=True)
+    awayShots = models.IntegerField(blank=True, null=True)
+
+    def __unicode__(self):
+        if self.homeScore is not None:
+            return self.homeTeam.name + " " + str(self.homeScore) + "-" + \
+                str(self.awayScore) + " " + self.awayTeam.name + " " + str(self.dateTime)
+
+
+class PlayByPlay(models.Model):
+    gamePk = models.ForeignKey(Game)
+    link = models.URLField(null=True, blank=True)
+    timeStamp = models.CharField(max_length=20, null=True, blank=True)
+    gameState = models.CharField(max_length=1, choices=constants.gameStates)
+    period = models.IntegerField()
+    periodTime = models.TimeField()
+    dateTime = models.DateTimeField(null=True, blank=True)
+    playType = models.CharField(max_length=15, choices=constants.playTypes)
+    playDescription = models.CharField(max_length=50, null=True, blank=True)
+    shotType = models.CharField(max_length=12, choices=constants.shotTypes)
+    penaltySeverity = models.CharField(max_length=50, null=True, blank=True)
+    penaltyMinutes = models.IntegerField(null=True, blank=True)
+    homeScore = models.IntegerField()
+    awayScore = models.IntegerField()
+    xcoord = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
+    ycoord = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
+    timeOnIce = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Play By Play"
+
+
+class PlayerGameStats(models.Model):
+    player = models.ForeignKey("player.Player")
+    game = models.ForeignKey(Game)
+    timeOnIce = models.TimeField()
+    assists = models.IntegerField()
+    goals = models.IntegerField()
+    shots = models.IntegerField()
+    hits = models.IntegerField()
+    powerPlayGoals = models.IntegerField()
+    playerPlayAssists = models.IntegerField()
+    penaltyMinutes = models.IntegerField()
+    faceOffWins = models.IntegerField()
+    faceoffTaken = models.IntegerField()
+    takeaways = models.IntegerField()
+    giveaways = models.IntegerField()
+    shortHandedGoals = models.IntegerField()
+    shortHandedAssists = models.IntegerField()
+    blocked = models.IntegerField()
+    plusMinus = models.IntegerField()
+    evenTimeOnIce = models.TimeField()
+    powerPlayTimeOnIce = models.TimeField()
+    shortHandedTimeOnIce = models.TimeField()
+
+    class Meta:
+        verbose_name = "Player Game Stats"
+        verbose_name_plural = "Players Game Stats"
+
+
+class Shootout(models.Model):
+    game = models.ForeignKey(Game)
+    awayScores = models.IntegerField()
+    awayAttempts = models.IntegerField()
+    homeScores = models.IntegerField()
+    homeAttempts = models.IntegerField()
+
+
+class PlayerOnIce(models.Model):
+    play = models.ForeignKey(PlayByPlay)
+    game = models.ForeignKey(Game)
+    player = models.ForeignKey("player.Player")
+    player_type = models.IntegerField(null=True, blank=True, choices=constants.playerTypes)
+
+    class Meta:
+        verbose_name = "Player On Ice"
+        verbose_name_plural = "Players On Ice"
+
+
+class GameScratch(models.Model):
+    game = models.ForeignKey(Game)
+    team = models.ForeignKey("team.Team")
+    player = models.ForeignKey("player.Player")
+
+    class Meta:
+        verbose_name = "Game Scratch"
+        verbose_name_plural = "Game Scratches"
