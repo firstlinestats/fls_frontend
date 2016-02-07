@@ -24,10 +24,21 @@ class Game(models.Model):
     awayPPGoals = models.IntegerField(blank=True, null=True)
     homePPOpportunities = models.IntegerField(blank=True, null=True)
     awayPPOpportunities = models.IntegerField(blank=True, null=True)
+    homeFaceoffPercentage = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
+    awayFaceoffPercentage = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
     homeBlocked = models.IntegerField(blank=True, null=True)
     awayBlocked = models.IntegerField(blank=True, null=True)
     homePIM = models.IntegerField(blank=True, null=True)
     awayPIM = models.IntegerField(blank=True, null=True)
+    homeTakeaways = models.IntegerField(blank=True, null=True)
+    awayTakeaways = models.IntegerField(blank=True, null=True)
+    homeGiveaways = models.IntegerField(blank=True, null=True)
+    awayGiveaways = models.IntegerField(blank=True, null=True)
+    homeHits = models.IntegerField(blank=True, null=True)
+    awayHits = models.IntegerField(blank=True, null=True)
+    firstStar = models.ForeignKey("player.Player", null=True, blank=True, related_name="firstStar")
+    secondStar = models.ForeignKey("player.Player", null=True, blank=True, related_name="secondStar")
+    thirdStar = models.ForeignKey("player.Player", null=True, blank=True, related_name="thirdStar")
 
     def __unicode__(self):
         if self.homeScore is not None:

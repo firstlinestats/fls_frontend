@@ -43,7 +43,44 @@ def ingest_pbp():
             game.awayScore = lineScore["teams"]["away"]["goals"]
             game.homeShots = lineScore["teams"]["home"]["shotsOnGoal"]
             game.awayShot = lineScore["teams"]["away"]["shotsOnGoal"]
+            # Get period specific information
+            for period in lineScore["periods"]:
+                p, created = pbpmodels.GamePeriod.objects.get_or_create(game=game, period=period["num"])
+                p.startTime = period["startTime"]
+                p.endTime = period["endTime"]
+                p.homeScore = period["home"]["goals"]
+                p.homeShots = period["home"]["shotsOnGoal"]
+                p.awayScore = period["away"]["goals"]
+                p.awayShots = period["away"]["shotsOnGoal"]
+                p.save()
+            if lineScore["hasShootout"]:
+                sinfo = lineScore["shootoutInfo"]
+                s, created = pbpmodels.Shootout.objects.get_or_create(game=game)
+                s.awayScores = sinfo["away"]["goals"]
+                s.awayAttempts = sinfo["away"]["shotsOnGoal"]
+                s.homeScores = sinfo["home"]["goals"]
+                s.homeAttempts = sinfo["home"]["shotsOnGoal"]
+                s.save()
             # Get boxscore information
+            boxScore = ld["boxscore"]
+            home = boxScore["teams"]["home"]["teamStats"]["teamSkaterStats"]
+            away = boxScore["teams"]["away"]["teamStats"]["teamSkaterStats"]
+            game.homePIM = home["pim"]
+            game.awayPIM = away["pim"]
+            game.homePPGoals = home["powerPlayGoals"]
+            game.awayPPGoals = away["powerPlayGoals"]
+            game.homePPOpportunities = home["powerPlayOpportunities"]
+            game.awayPPOpportunities = away["powerPlayOpportunities"]
+            game.homeFaceoffPercentage = home["faceOffWinPercentage"]
+            game.awayFaceoffPercentage = away["faceOffWinPercentage"]
+            game.homeBlocked = home["blocked"]
+            game.awayBlocked = away["blocked"]
+            game.homeTakeaways = home["takeaways"]
+            game.awayTakeaways = away["takeaways"]
+            game.homeGiveaways = home["giveaways"]
+            game.awayGiveaways = away["giveaways"]
+            game.homeHits = home["hits"]
+            game.awayHits = away["hits"]
             # link
 
             # gamePk
