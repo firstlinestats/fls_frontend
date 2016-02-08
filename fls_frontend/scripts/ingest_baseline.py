@@ -16,15 +16,27 @@ import api_calls
 import team.models as tmodels
 import player.models as pmodels
 import playbyplay.models as pbpmodels
-import playbyplay.helper as pbphelper
+from django.db import transaction
+#import playbyplay.helper as pbphelper
 
 
 def main():
     #ingest_teams()
     #ingest_players()
     #ingest_games()
-    ingest_pbp()
+    #ingest_pbp()
+    getAwayShots()
 
+@transaction.atomic
+def getAwayShots():
+    for game in pbpmodels.Game.objects.all().order_by("gamePk"):
+        with transaction.atomic():
+            print game.gamePk
+            j = json.loads(api_calls.get_game(game.gamePk))
+            ld = j["liveData"]
+            lineScore = ld["linescore"]
+            game.awayShots = lineScore["teams"]["away"]["shotsOnGoal"]
+            game.save()
 
 def ingest_pbp():
     players = {}
@@ -138,7 +150,7 @@ def ingest_pbp():
                 game.homeScore = lineScore["teams"]["home"]["goals"]
                 game.awayScore = lineScore["teams"]["away"]["goals"]
                 game.homeShots = lineScore["teams"]["home"]["shotsOnGoal"]
-                game.awayShot = lineScore["teams"]["away"]["shotsOnGoal"]
+                game.awayShots = lineScore["teams"]["away"]["shotsOnGoal"]
                 # Get period specific information
                 cperiod = 1
                 for period in lineScore["periods"]:

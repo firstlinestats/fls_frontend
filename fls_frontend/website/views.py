@@ -9,9 +9,9 @@ def index(request):
     games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:15]
     teams = Team.objects.all()
 
-    #for game in games:
-        #game.corsiHome = game.homeShots / game.awayShots
-        #game.corsiAway = game.awayShots / game.homeShots
+    for game in games:
+        game.corsiHome = game.homeShots / game.awayShots
+        game.corsiAway = game.awayShots / game.homeShots
 
     context = {
         'active_page': 'index',
