@@ -7,56 +7,28 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-sm-12">
                 <div class="well bs-component">
-                    <form class="form-horizontal">
-                        <fieldset>
-                            <legend>Filter Options</legend>
-                            <div class="form-group row">
-                                <label for="select" class="col-md-1 control-label">Team 1:</label>
-                                <div class="col-md-3">
-                                    <select class="form-control input-sm">
-                                        <option value disabled selected> Select a team </option>
-                                        {% for team in teams %}
-                                            <option value="{{ team.teamName }}">{{ team.teamName }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <label for="select" class="col-md-1 control-label">Team 2:</label>
-                                <div class="col-md-3">
-                                    <select class="form-control input-sm">
-                                        <option value disabled selected> Select a team </option>
-                                        {% for team in teams %}
-                                            <option value="{{ team.teamName }}">{{ team.teamName }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <label for="select" class="col-md-1 control-label">Season:</label>
-                                <div class="col-md-3">
-                                    <select class="form-control input-sm">
-                                        <option value disabled selected> Select a season </option>                                        
-                                        <option value="20152016">2015 - 2016</option>                                        
-                                    </select>
-                                </div>                                                            
-                            </div>
-                            <div class="form-group row">
-                                <label for="select" class="col-md-1 control-label">Session:</label>
-                                <div class="col-md-1">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox"> Regular
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox"> Playoff
-                                        </label>
-                                    </div>
-                                </div> 
-                                <label for="select" class="col-md-1 control-label">Status:</label>
-                                <div class="col-md-3">
+                    <h3 class="filter-options">Filter Options</h3>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label>Teams:</label>                                    
+                            <select multiple="multiple" id="gamesSelect" class="form-control input-sm">
+                                {% for team in teams %}
+                                    <option value="{{ team.teamName }}">{{ team.teamName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div> 
+                        <div class="col-sm-4">
+                            <label>Seasons:</label>  
+                            <select multiple="multiple" id="seasonSelect" class="form-control input-sm">
+                                <option value="20152016">2015 - 2016</option>    
+                            </select>
+                        </div>
+                        <div class="col-sm-4">                            
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label for="select">Status:</label>                                
                                     <select class="form-control input-sm">
                                         <option value disabled selected> Select a status </option>
                                         <option value="1">Scheduled</option>
@@ -64,23 +36,41 @@
                                         <option value="3">In Progress</option>
                                         <option value="4">In Progress - Critical</option>
                                         <option value="5">Game Over</option>
-                                        <option value="7">Final</option>
-                                        
+                                        <option value="7">Final</option>                                        
                                     </select>
                                 </div>
-                                <label for="select" class="col-md-1 control-label">Venue:</label>
-                                <div class="col-md-3">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label>Venue:</label>                               
                                     <select class="form-control input-sm">
                                         <option value selected> Select a venue </option>                                        
-                                        {% for venue in venues %}
-                                            <option value="{{ venue.id }}">{{ venue.name }}</option>
+                                        {% for team in teams %}
+                                            <option value="{{ team.venue }}">{{ team.venue }}</option>
                                         {% endfor %}                                    
                                     </select>
-                                </div>                                                            
+                                </div>
                             </div>
-                        </fieldset>
-
-                    </form>
+                            <div class="row">                              
+                                <div class="col-sm-12">
+                                    <label>Sesson:</label>
+                                    <div class="form-group">
+                                        <label class="checkbox-inline"><input type="checkbox" value="">Regular</label>
+                                        <label class="checkbox-inline"><input type="checkbox" value="">Playoff</label>
+                                    </div>                                 
+                                </div>
+                            </div>
+                            <div class="row">                              
+                                <div class="col-sm-12">
+                                    <div class="form-group text-right">
+                                        <a href="#" class="btn btn-danger btn-sm">Reset</a>
+                                        <a href="#" class="btn btn-primary btn-sm">Submit</a>
+                                    </div>                                 
+                                </div>
+                            </div>
+                        </div>                       
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -123,6 +113,8 @@
 {% block page_js %}
     <script>
         $(document).ready(function() {
+            $('#gamesSelect').multiSelect();
+            $('#seasonSelect').multiSelect();
             $('#gamesList').DataTable({
                 "iDisplayLength": 15
             });

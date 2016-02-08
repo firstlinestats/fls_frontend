@@ -5,12 +5,9 @@
 	height: 79px;
 	margin-top: -20px;
 }
-.vcenter-parent {
-    display: table;
-    table-layout: fixed;
+.ms-container {
+    margin: auto;
 }
-.vcenter-child {
-    display: table-cell;
-    vertical-align: middle;
-    float: none;
+h3.filter-options {
+    margin-top: 0px;
 }
