@@ -13,8 +13,7 @@
               <th>Home</th>
               <th class="text-center">Score</th>
               <th>Away</th>
-              <th>Home Corsi</th>
-              <th>Away Corsi</th>
+              <th>Corsi</th>
               <th>Status</th>
               <th>Start Time</th>
               <th>End Time</th>
@@ -28,8 +27,7 @@
                 <td><img height="17" width="17" src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ game.homeTeam.id }}">{{ game.homeTeam }}</a></td>
                 <td class="text-center">{{ game.homeScore }} - {{ game.awayScore }}</td>
                 <td><img height="17" width="17" src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.awayTeam.id }}">{{ game.awayTeam }}</a></td>
-                <td>{{ game.homeShots }} / {{ game.awayShots }}</td>
-                <td>{{ game.awayShots }} / {{ game.homeShots }}</td>
+                <td>{{ game.homeShots|add:game.homeBlocked|add:game.homeMissed }} / {{ game.awayShots|add:game.awayBlocked|add:game.awayMissed }}</td>
                 <td>{{ game.gameState }}</td>
                 <td>{{ game.dateTime|time }}</td>
                 <td>{{ game.endDateTime|time }}</td>

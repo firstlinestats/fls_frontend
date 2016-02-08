@@ -28,6 +28,8 @@ class Game(models.Model):
     awayFaceoffPercentage = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
     homeBlocked = models.IntegerField(blank=True, null=True)
     awayBlocked = models.IntegerField(blank=True, null=True)
+    homeMissed = models.IntegerField(blank=True, null=True)
+    awayMissed = models.IntegerField(blank=True, null=True)
     homePIM = models.IntegerField(blank=True, null=True)
     awayPIM = models.IntegerField(blank=True, null=True)
     homeTakeaways = models.IntegerField(blank=True, null=True)
@@ -76,6 +78,7 @@ class PlayByPlay(models.Model):
     ycoord = models.DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
     timeOnIce = models.IntegerField(null=True, blank=True)
     strength = models.CharField(max_length=20, null=True, blank=True)
+    team = models.ForeignKey("team.Team", null=True, blank=True)
 
     class Meta:
         verbose_name = "Play By Play"

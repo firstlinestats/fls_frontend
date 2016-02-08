@@ -4,6 +4,8 @@ import json
 import glob
 import django
 
+from datetime import datetime
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "fls_frontend"))
 sys.path.append("../")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fls_frontend.settings")
@@ -20,11 +22,66 @@ import playbyplay.helper as pbphelper
 from django.db import transaction
 
 def main():
-    #ingest_teams()
-    #ingest_players()
-    #ingest_games()
-    #ingest_pbp()
-    getAwayShots()
+    ingest_teams()
+    ingest_players()
+    ingest_games()
+    ingest_pbp()
+    #getAwayShots()
+    #getMissedShots()
+
+
+@transaction.atomic
+def getMissedShots():
+    count = 0
+    games = []
+    saves = []
+    start = datetime.now()
+    for game in pbpmodels.Game.objects.all():
+        if game.gameState not in ["1", "2", "8", "9"]:
+            count += 1
+            try:
+                j = json.loads(api_calls.get_game(game.gamePk))
+                ld = j["liveData"]
+                # Plays
+                homeMissed = 0
+                awayMissed = 0
+                tpbp = pbpmodels.PlayByPlay.objects.filter(gamePk_id=game.gamePk)
+                pbp = {}
+                for t in tpbp:
+                    pbp[t.eventId] = t
+                teamid = None
+                missed = None
+                for play in ld["plays"]["allPlays"]:
+                    eventId = play["about"]["eventIdx"]
+                    if eventId in pbp and "team" in play:
+                        pbp[eventId].team_id = play["team"]["id"]
+                        saves.append(pbp[eventId])
+                        if play["result"]["eventTypeId"] == "MISSED_SHOT":
+                            if play["team"]["id"] == game.homeTeam_id:
+                                homeMissed += 1
+                            else:
+                                awayMissed += 1
+                game.homeMissed = homeMissed
+                game.awayMissed = awayMissed
+                games.append(game)
+            except Exception as e:
+                print e
+                print "ISSUE WITH " + str(game.gamePk)
+        if count % 100 == 0:
+            print count, datetime.now() - start
+            with transaction.atomic():
+                for g in games:
+                    g.save()
+                for s in saves:
+                    s.save()
+                games = []
+                saves = []
+            print count, datetime.now() - start
+    for g in games:
+        g.save()
+    for s in saves:
+        s.save()
+
 
 @transaction.atomic
 def getAwayShots():
@@ -62,6 +119,8 @@ def ingest_pbp():
         if count % 100 == 0:
             print count, game.gamePk
         if game.gameState not in ["1", "2", "8", "9"]:
+            homeMissed = 0
+            awayMissed = 0
             try:
                 j = json.loads(api_calls.get_game(game.gamePk))
                 homeSkaters = j["liveData"]["boxscore"]["teams"]["home"]["skaters"]
@@ -110,6 +169,13 @@ def ingest_pbp():
                     p.dateTime = about["dateTime"]
                     p.playType = result["eventTypeId"]
                     p.playDescription = result["description"]
+                    if "team" in play:
+                        p.team_id = play["team"]["id"]
+                    if result["eventTypeId"] == "MISSED_SHOT":
+                        if play["team"]["id"] == game.homeTeam_id:
+                            homeMissed += 1
+                        else:
+                            awayMissed += 1
                     if "secondaryType" in result:
                         if p.playType == "PENALTY":
                             p.penaltyType = result["secondaryType"]
@@ -150,6 +216,10 @@ def ingest_pbp():
                 game.awayScore = lineScore["teams"]["away"]["goals"]
                 game.homeShots = lineScore["teams"]["home"]["shotsOnGoal"]
                 game.awayShots = lineScore["teams"]["away"]["shotsOnGoal"]
+                game.homeMissed = homeMissed
+                game.awayMissed = awayMissed
+                homeMissed = 0
+                awayMissed = 0
                 # Get period specific information
                 cperiod = 1
                 for period in lineScore["periods"]:

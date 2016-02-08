@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'fls_frontend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': cred.DB_NAME,
         'USER': cred.USER,
         'PASSWORD': cred.PASSWORD,
