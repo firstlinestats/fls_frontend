@@ -58,12 +58,13 @@ class GamePeriod(models.Model):
 
 
 class PlayByPlay(models.Model):
+    id = models.IntegerField(primary_key=True)
     gamePk = models.ForeignKey(Game)
     eventId = models.IntegerField(null=True, blank=True)
     period = models.IntegerField()
     periodTime = models.TimeField()
     dateTime = models.DateTimeField(null=True, blank=True)
-    playType = models.CharField(max_length=15, choices=constants.playTypes)
+    playType = models.CharField(max_length=25, choices=constants.playTypes)
     playDescription = models.CharField(max_length=100, null=True, blank=True)
     shotType = models.CharField(max_length=12, choices=constants.shotTypes, null=True, blank=True)
     penaltyType = models.CharField(max_length=100, null=True, blank=True)
@@ -78,6 +79,9 @@ class PlayByPlay(models.Model):
 
     class Meta:
         verbose_name = "Play By Play"
+
+    def __unicode__(self):
+        return self.gamePk.homeTeam.shortName + " vs. " + self.gamePk.awayTeam.shortName + " on " + str(self.gamePk.dateTime) + " Play: " + str(self.eventId)
 
 
 class PlayerGameStats(models.Model):
