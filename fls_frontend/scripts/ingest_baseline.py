@@ -16,9 +16,8 @@ import api_calls
 import team.models as tmodels
 import player.models as pmodels
 import playbyplay.models as pbpmodels
+import playbyplay.helper as pbphelper
 from django.db import transaction
-#import playbyplay.helper as pbphelper
-
 
 def main():
     #ingest_teams()
