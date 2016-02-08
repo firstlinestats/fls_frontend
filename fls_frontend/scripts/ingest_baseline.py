@@ -22,12 +22,27 @@ import playbyplay.helper as pbphelper
 from django.db import transaction
 
 def main():
-    ingest_teams()
-    ingest_players()
-    ingest_games()
-    ingest_pbp()
+    #ingest_teams()
+    #ingest_players()
+    #ingest_games()
+    #ingest_pbp()
     #getAwayShots()
     #getMissedShots()
+    checkOT()
+
+
+@transaction.atomic
+def checkOT():
+    for play in pbpmodels.PlayByPlay.objects.filter(period=5):
+        game = play.gamePk
+        if play.playType == "MISSED_SHOT":
+            if play.team == game.homeTeam:
+                game.homeMissed -= 1
+            elif play.team == game.awayTeam:
+                game.awayMissed -= 1
+            if game.gamePk == 2015020788:
+                print game.homeMissed, game.awayMissed
+            game.save()
 
 
 @transaction.atomic
