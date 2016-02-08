@@ -1,4 +1,7 @@
 {% extends "wrappers/wrapper.html" %}
+
+{% load website_extras %}
+
 {% block content %}
   {% load staticfiles %}
   <div class="container">
@@ -28,7 +31,7 @@
                 <td class="text-center">{{ game.homeScore }} - {{ game.awayScore }}</td>
                 <td><img height="17" width="17" src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.awayTeam.id }}">{{ game.awayTeam }}</a></td>
                 <td>{{ game.homeShots|add:game.awayBlocked|add:game.homeMissed }} / {{ game.awayShots|add:game.homeBlocked|add:game.awayMissed }}</td>
-                <td>{{ game.gameState }}</td>
+                <td>{{ game.gameState|gameStatus }}</td>
                 <td>{{ game.dateTime|time }}</td>
                 <td>{{ game.endDateTime|time }}</td>
                 <td class='text-right'><a href="/games/{{ game.gamePk }}">Game Details</a></td>

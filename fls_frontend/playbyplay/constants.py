@@ -13,8 +13,8 @@ gameStates = (
     ("3", "Live (In Progress)"),
     ("4", "Live (In Progress - Critical)"),
     ("5", "Final (Game Over)"),
-    ("6", "Final (Final)"),
-    ("7", "Final (Final)"),
+    ("6", "Final"),
+    ("7", "Final"),
     ("8", "Preview (Scheduled (Time TBD))"),
     ("9", "Preview (Postponed)")
 )
