@@ -1,11 +1,130 @@
 {% extends "wrappers/wrapper.html" %}
-{% block content %}
 {% load staticfiles %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Games Page!</h1>
+{% block page_css %}
+    <link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "MultiSelect/css/multi-select.css" %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="well bs-component">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <legend>Filter Options</legend>
+                            <div class="form-group row">
+                                <label for="select" class="col-md-1 control-label">Teams:</label>                                
+                                <div class="col-md-4">
+                                    <select id='teams' multiple='multiple'>
+                                        {% for team in teams %}
+                                            <option value="{{ team.id }}">{{ team.teamName }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label for="select" class="col-md-1 control-label">Season:</label>
+                                        <div class="col-md-3">
+                                            <select class="form-control input-sm">
+                                                <option value disabled selected> Select a season </option>
+                                                <option value="20152016">2015 - 2016</option>
+                                            </select>
+                                        </div>
+                                        <label for="select" class="col-md-1 control-label">Session:</label>
+                                        <div class="col-md-1">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox"> Regular
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox"> Playoff
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                                                                           
+                            </div>
+                            <div class="form-group row">
+                                <label for="select" class="col-md-1 control-label">Status:</label>
+                                <div class="col-md-3">
+                                    <select class="form-control input-sm">
+                                        <option value disabled selected> Select a status </option>
+                                        <option value="1">Scheduled</option>
+                                        <option value="2">Pre-Game</option>
+                                        <option value="3">In Progress</option>
+                                        <option value="4">In Progress - Critical</option>
+                                        <option value="5">Game Over</option>
+                                        <option value="7">Final</option>
+                                        
+                                    </select>
+                                </div>
+                                <label for="select" class="col-md-1 control-label">Venue:</label>
+                                <div class="col-md-3">
+                                    <select class="form-control input-sm">
+                                        <option value selected> Select a venue </option>                                        
+                                        {% for venue in venues %}
+                                            <option value="{{ venue.id }}">{{ venue.name }}</option>
+                                        {% endfor %}                                    
+                                    </select>
+                                </div>  
+                                                                                          
+                            </div>
+                        </fieldset>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="gamesList" class="table table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th>Game Date</th>
+                            <th>Session</th>
+                            <th>Home</th>
+                            <th class="text-center">Score</th>
+                            <th>Away</th>
+                            <th>Home Corsi</th>
+                            <th>Away Corsi</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for game in game_list %}
+                            <tr>
+                                <td>{{ game.dateTime|date }}</td>
+                                <td>{{ game.gameType }}</td>
+                                <td><img height="17" width="17" src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ game.homeTeam.id }}">{{ game.homeTeam.teamName }}</a></td>
+                                <td class="text-center">{{ game.homeScore }} - {{ game.awayScore }}</td>
+                                <td><img height="17" width="17" src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.awayTeam.id }}">{{ game.awayTeam.teamName }}</a></td>
+                                <td>{{ game.homeShots }} / {{ game.awayShots }}</td>
+                                <td>{{ game.awayShots }} / {{ game.homeShots }}</td>
+                                <td>{{ game.gameState }}</td>
+                                <td class='text-right'><a href="/games/{{ game.gamePk }}">Details</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+{% endblock %}
+{% block page_js %}
+    <script>
+        $(document).ready(function() {
+            $('#teams').multiSelect();
+            $('#gamesList').DataTable({
+                "iDisplayLength": 15
+            });
+        });
+    </script>
+    <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
+    <script src="{% static "MultiSelect/js/jquery.multi-select.js" %}"></script>
 {% endblock %}
