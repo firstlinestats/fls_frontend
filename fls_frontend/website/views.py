@@ -6,7 +6,7 @@ import datetime
 # Create your views here.
 
 def index(request):
-    games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:15]
+    games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:30]
     teams = Team.objects.all()
     context = {
         'active_page': 'index',

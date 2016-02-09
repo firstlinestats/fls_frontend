@@ -54,9 +54,11 @@ def players(request):
             gameStats[t]["G60"] = round(gameStats[t]["goals"] / gameStats[t]["timeOnIce"].total_seconds() * 60 * 60, 2)
             gameStats[t]["A60"] = round(gameStats[t]["assists"] / gameStats[t]["timeOnIce"].total_seconds() * 60 * 60, 2)
             gameStats[t]["P60"] = gameStats[t]["G60"] + gameStats[t]["A60"]
+            gameStats[t]["TOIGm"] = round(gameStats[t]["timeOnIce"].total_seconds() / games / 60, 2)
         else:
             gameStats[t]["G60"] = 0
             gameStats[t]["A60"] = 0
             gameStats[t]["P60"] = 0
+            gameStats[t]["TOIGm"] = 0
     context["gameStats"] = gameStats
     return render(request, 'player/players.html', context)

@@ -28,7 +28,79 @@ def main():
     #ingest_pbp()
     #getAwayShots()
     #getMissedShots()
-    checkOT()
+    findTeam()
+
+
+@transaction.atomic
+def findTeam():
+    game_data = {}
+    count = 0
+    playerlist = pbpmodels.PlayerGameStats.objects.order_by("game")
+    plength = len(playerlist)
+    for player in playerlist:
+        count += 1
+        if count % 100 == 0:
+            print count, plength
+        gamePk = player.game.gamePk
+        if gamePk not in game_data:
+            print gamePk
+            j = json.loads(api_calls.get_game(gamePk))
+            j = j["liveData"]
+            game_data[gamePk] = {}
+            allplayers = ["goalies", "skaters", "onIce", "scratches"]
+            game_data[gamePk]["away"] = set()
+            game_data[gamePk]["home"] = set()
+            game_data[gamePk]["homegoalies"] = j["boxscore"]["teams"]["home"]["players"]
+            game_data[gamePk]["awaygoalies"] = j["boxscore"]["teams"]["away"]["players"]
+            game_data[gamePk]["awayteam"] = j["boxscore"]["teams"]["away"]["team"]["id"]
+            game_data[gamePk]["hometeam"] = j["boxscore"]["teams"]["home"]["team"]["id"]
+            game_data[gamePk]["period"] = j["linescore"]["currentPeriod"]
+            for p in allplayers:
+                game_data[gamePk]["away"].update(j["boxscore"]["teams"]["away"][p])
+                game_data[gamePk]["home"].update(j["boxscore"]["teams"]["home"][p])
+        """if player.player.id in game_data[gamePk]["away"]:
+            player.team_id = game_data[gamePk]["awayteam"]
+        elif player.player.id in game_data[gamePk]["home"]:
+            player.team_id = game_data[gamePk]["hometeam"]
+        else:
+            print player.player.id, game_data[gamePk]["away"]
+            print player.player.id, game_data[gamePk]["home"]
+            raise Exception
+        player.save()"""
+    for gamePk in game_data:
+        gd = game_data[gamePk]
+        checkGoalies(gd["homegoalies"], gamePk, gd["hometeam"], gd["period"])
+        checkGoalies(gd["awaygoalies"], gamePk, gd["awayteam"], gd["period"])
+
+
+@transaction.atomic()
+def checkGoalies(players, gamePk, team, period):
+    for player in players:
+        playerstats = players[player]["stats"]
+        if "goalieStats" in playerstats:
+            gs = playerstats["goalieStats"]
+            goalie = pbpmodels.GoalieGameStats()
+            goalie.player_id = int(player.replace("ID", ""))
+            goalie.game_id = gamePk
+            goalie.team_id = team
+            goalie.period = period
+            if gs["timeOnIce"] != "60:00":
+                goalie.timeOnIce = "00:" + gs["timeOnIce"]
+            else:
+                goalie.timeOnIce = "01:00:00"
+            goalie.assists = gs["assists"]
+            goalie.goals = gs["goals"]
+            goalie.pim = gs["pim"]
+            goalie.shots = gs["shots"]
+            goalie.saves = gs["saves"]
+            goalie.powerPlaySaves = gs["powerPlaySaves"]
+            goalie.shortHandedSaves = gs["shortHandedSaves"]
+            goalie.shortHandedShotsAgainst = gs["shortHandedShotsAgainst"]
+            goalie.evenShotsAgainst = gs["evenShotsAgainst"]
+            goalie.evenSaves = gs["evenSaves"]
+            goalie.powerPlayShotsAgainst = gs["powerPlayShotsAgainst"]
+            goalie.decision = gs["decision"]
+            goalie.save()
 
 
 @transaction.atomic

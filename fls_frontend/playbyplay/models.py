@@ -90,6 +90,7 @@ class PlayByPlay(models.Model):
 class PlayerGameStats(models.Model):
     player = models.ForeignKey("player.Player")
     game = models.ForeignKey(Game)
+    team = models.ForeignKey("team.Team", null=True, blank=True)
     period = models.IntegerField()
     timeOnIce = models.TimeField()
     assists = models.IntegerField()
@@ -114,6 +115,26 @@ class PlayerGameStats(models.Model):
     class Meta:
         verbose_name = "Player Game Stats"
         verbose_name_plural = "Players Game Stats"
+
+
+class GoalieGameStats(models.Model):
+    player = models.ForeignKey("player.Player")
+    game = models.ForeignKey(Game)
+    team = models.ForeignKey("team.Team")
+    period = models.IntegerField()
+    timeOnIce = models.TimeField()
+    assists = models.IntegerField()
+    goals = models.IntegerField()
+    pim = models.IntegerField()
+    shots = models.IntegerField()
+    saves = models.IntegerField()
+    powerPlaySaves = models.IntegerField()
+    shortHandedSaves = models.IntegerField()
+    evenSaves = models.IntegerField()
+    shortHandedShotsAgainst = models.IntegerField()
+    evenShotsAgainst = models.IntegerField()
+    powerPlayShotsAgainst = models.IntegerField()
+    decision = models.CharField(max_length=5)
 
 
 class Shootout(models.Model):
