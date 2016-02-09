@@ -1,11 +1,68 @@
 {% extends "wrappers/wrapper.html" %}
 {% block content %}
 {% load staticfiles %}
+{% block page_css %}
+    <link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+{% endblock %}
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1>Players Page!</h1>
+            <h1>Players</h1>
         </div>
     </div>
+    <div class="row">
+        <table id="playerList" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Position</th>
+                    <th style="width:75px;">Team</th>
+                    <th>Age</th>
+                    <th>Games</th>
+                    <th>Goals</th>
+                    <th>Assists</th>
+                    <th>Points</th>
+                    <th>G60</th>
+                    <th>A60</th>
+                    <th>P60</th>
+                    <th>+/-</th>
+                    <th>Shots</th>
+                    <th>PIM</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player, values in gameStats.items %}
+                <tr>
+                    <td>{{ values.player__fullName }}</td>
+                    <td>{{ values.player__primaryPositionCode }}</td>
+                    <td><img height="17" width="17" src='{% with 'images/team/'|add:values.player__currentTeam__abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ values.player__currentTeam }}">{{ values.player__currentTeam__shortName }}</a></td>
+                    <td>{{ values.age }}</td>
+                    <td>{{ values.games }}</td>
+                    <td>{{ values.goals }}</td>
+                    <td>{{ values.assists }}</td>
+                    <td>{{ values.goals|add:values.assists }}</td>
+                    <td>{{ values.G60 }}</td>
+                    <td>{{ values.A60 }}</td>
+                    <td>{{ values.P60 }}</td>
+                    <td>{{ values.plusMinus }}</td>
+                    <td>{{ values.shots }}</td>
+                    <td>{{ values.penaltyMinutes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+{% endblock %}
+{% block page_js %}
+    <script>
+        $(document).ready(function() {
+            $('#playerList').DataTable({
+                "iDisplayLength": 15,
+                "order": [[ 5, "desc" ]]
+            });
+        });
+    </script>
+    <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
 {% endblock %}
