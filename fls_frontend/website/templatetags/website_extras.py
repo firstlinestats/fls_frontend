@@ -9,6 +9,7 @@ from playbyplay.constants import gameStates, gameTypes
 
 register = template.Library()
 
+
 @register.filter()
 def gameStatus(value):
     return check_constants(value, gameStates)
