@@ -29,6 +29,17 @@ def checkOT(game):
         return ""
 
 
+@register.filter()
+def streakColor(streak):
+    if "L" in streak:
+        return "red"
+    elif "W" in streak:
+        return "green"
+    elif "O" in streak:
+        return "red"
+    return "blue"
+
+
 def check_constants(value, constant, unknown="Unknown"):
     for state in constant:
         if state[0] == value:

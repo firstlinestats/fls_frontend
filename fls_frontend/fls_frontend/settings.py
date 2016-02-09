@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'playbyplay',
     'player',
-    'schedule',
     'team',
     'website'
 ]

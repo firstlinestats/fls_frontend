@@ -38,3 +38,16 @@ class Team(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class SeasonStats(models.Model):
+    team = models.ForeignKey(Team)
+    season = models.IntegerField()
+    goalsAgainst = models.IntegerField()
+    goalsScored = models.IntegerField()
+    points = models.IntegerField()
+    gamesPlayed = models.IntegerField()
+    streakCode = models.CharField(max_length=3, null=True, blank=True)
+    wins = models.IntegerField()
+    losses = models.IntegerField()
+    ot = models.IntegerField()

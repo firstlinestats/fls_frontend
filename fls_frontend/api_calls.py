@@ -25,6 +25,11 @@ def get_teams(id=None):
     return get_url(url)
 
 
+def get_standings():
+    url = api_urls.STANDINGS
+    return get_url(url)
+
+
 def get_team_roster(id):
     url = api_urls.ROSTER_LIST.replace("<teamId>", str(id))
     return get_url(url)

@@ -29,6 +29,32 @@ def main():
     #getAwayShots()
     #getMissedShots()
     findTeam()
+    #findStandings(20152016)
+
+
+@transaction.atomic
+def findStandings(season):
+    j = json.loads(api_calls.get_standings())
+    for record in j["records"]:
+        division = record["division"]["name"][0]
+        conference = record["division"]["name"][0]
+        for team in record["teamRecords"]:
+            stat = tmodels.SeasonStats()
+            stat.team_id = team["team"]["id"]
+            stat.season = season
+            stat.goalsAgainst = team["goalsAgainst"]
+            stat.goalsScored = team["goalsScored"]
+            stat.points = team["points"]
+            stat.gamesPlayed = team["gamesPlayed"]
+            stat.wins = team["leagueRecord"]["wins"]
+            stat.losses = team["leagueRecord"]["losses"]
+            stat.ot = team["leagueRecord"]["ot"]
+            try:
+                stat.streakCode = team["streak"]["streakCode"]
+            except:
+                pass
+            stat.save()
+
 
 
 @transaction.atomic
@@ -58,7 +84,7 @@ def findTeam():
             for p in allplayers:
                 game_data[gamePk]["away"].update(j["boxscore"]["teams"]["away"][p])
                 game_data[gamePk]["home"].update(j["boxscore"]["teams"]["home"][p])
-        """if player.player.id in game_data[gamePk]["away"]:
+        if player.player.id in game_data[gamePk]["away"]:
             player.team_id = game_data[gamePk]["awayteam"]
         elif player.player.id in game_data[gamePk]["home"]:
             player.team_id = game_data[gamePk]["hometeam"]
@@ -66,7 +92,7 @@ def findTeam():
             print player.player.id, game_data[gamePk]["away"]
             print player.player.id, game_data[gamePk]["home"]
             raise Exception
-        player.save()"""
+        player.save()
     for gamePk in game_data:
         gd = game_data[gamePk]
         checkGoalies(gd["homegoalies"], gamePk, gd["hometeam"], gd["period"])
@@ -84,10 +110,15 @@ def checkGoalies(players, gamePk, team, period):
             goalie.game_id = gamePk
             goalie.team_id = team
             goalie.period = period
-            if gs["timeOnIce"] != "60:00":
+            if gs["timeOnIce"] < "60:00":
                 goalie.timeOnIce = "00:" + gs["timeOnIce"]
+            elif gs["timeOnIce"] >= "01:00:00":
+                goalie.timeOnIce = gs["timeOnIce"]
             else:
-                goalie.timeOnIce = "01:00:00"
+                minutes = str(int(gs["timeOnIce"][:2]) - 60)
+                if len(minutes) == 1:
+                    minutes = "0" + minutes
+                goalie.timeOnIce = "01:" + minutes + gs["timeOnIce"][2:]
             goalie.assists = gs["assists"]
             goalie.goals = gs["goals"]
             goalie.pim = gs["pim"]
