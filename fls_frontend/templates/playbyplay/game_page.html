@@ -9,7 +9,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 text-center">
-                <img src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
+                <img src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
             </div>
             <div class="col-md-4 text-center">
                 <div class="row">
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="col-md-4 text-center">
-                <img src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
+                <img src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
             </div>
         </div>
         <div class="row">
