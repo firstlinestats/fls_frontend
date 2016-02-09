@@ -4,6 +4,7 @@ import pytz
 
 from django import template
 
+from playbyplay import models
 from playbyplay.constants import gameStates
 
 register = template.Library()
@@ -17,8 +18,9 @@ def gameStatus(value):
 
 
 @register.filter()
-def convertDate(value):
-    if value is not None:
-        localtimezone = pytz.timezone('US/Eastern')
-        return value.astimezone(localtimezone)
-    return ""
+def checkOT(game):
+    try:
+        ot = models.GamePeriod.objects.get(game=game, period=4)
+        return " (OT)"
+    except:
+        return ""
