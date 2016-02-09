@@ -1,0 +1,35 @@
+{% load staticfiles %}
+{% load website_extras %}
+<h4 class="text-center">{{ division }}</h4>
+<div class="well bs-component">
+  <table class="table table-striped table-hover ">
+    <thead>
+      <tr>
+        <th>Team Name</th>
+        <th>Games Played</th>
+        <th>Wins</th>
+        <th>Losses</th>
+        <th>Points</th>
+        <th>Goals For</th>
+        <th>Goals Against</th>
+        <th>Streak</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for team in teams %}
+        {% if team.team.division == divisionVal %}
+          <tr>
+            <td style="white-space:nowrap;"><img height="17" width="17" src='{% with 'images/team/'|add:team.team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.team.id }}">{{ team.team.teamName }}</a></td>
+            <td>{{ team.gamesPlayed }}</td>
+            <td>{{ team.wins }}</td>
+            <td>{{ team.losses }}</td>
+            <td>{{ team.points }}</td>
+            <td>{{ team.goalsScored }}</td>
+            <td>{{ team.goalsAgainst }}</td>
+            <td style="color:{{ team.streakCode|streakColor }}">{{ team.streakCode }}</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
