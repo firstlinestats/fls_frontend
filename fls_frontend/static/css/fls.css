@@ -11,3 +11,12 @@
 h3.filter-options {
     margin-top: 0px;
 }
+h3.home-team {
+    margin-bottom: 0px;
+}
+h3.away-team {
+    margin-top: 0px;
+}
+.game-content {
+    margin-top: 20px;
+}

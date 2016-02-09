@@ -7,14 +7,62 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-md-2 col-md-offset-1">
+        <div class="col-md-4 text-center">
             <img src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
         </div>
-        <div class="col-md-4">
-            <h3>{{ game.gamePk  }}</h3>
+        <div class="col-md-4 text-center">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="home-team">{{ game.homeTeam }}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4> Vs</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="away-team">{{ game.awayTeam }}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>{{ game.homeScore }} - {{ game.awayScore }}</h3>
+                </div>
+            </div>
         </div>
-        <div class="col-md-2 col-md-offset-1">
+        <div class="col-md-4 text-center">
             <img src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
+        </div>
+    </div>
+</div>
+<div class="container game-content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="well bs-component">
+                <div class="row">
+                    <div class="col-md-12">
+                        
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tableView" data-toggle="tab" aria-expanded="true">Table View</a></li>
+                <li class=""><a href="#graphView" data-toggle="tab" aria-expanded="false">Graph View</a></li>
+            </ul>
+            <div id="gameTabContent" class="tab-content">
+                <div class="tab-pane fade active in" id="tableView">
+                  <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+                </div>
+                <div class="tab-pane fade" id="graphView">
+                  <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
+                </div>                
+            </div>
         </div>
     </div>
 </div>
