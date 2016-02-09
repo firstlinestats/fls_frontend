@@ -1,0 +1,23 @@
+{% extends "wrappers/wrapper.html" %}
+{% load staticfiles %}
+{% block page_css %}
+    <link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "MultiSelect/css/multi-select.css" %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2 col-md-offset-1">
+            <img src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
+        </div>
+        <div class="col-md-4">
+            <h3>{{ game.gamePk  }}</h3>
+        </div>
+        <div class="col-md-2 col-md-offset-1">
+            <img src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block page_js %}
+{% endblock %}

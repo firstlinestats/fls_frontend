@@ -1,12 +1,12 @@
 from django.shortcuts import render
+from django.http import Http404
 from playbyplay.models import Game
-from team.models import Venue
 from team.models import Team
 import datetime
 
 # Create your views here.
 def games(request):
-    games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:50]
+    games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:100]
     teams = Team.objects.all().order_by('teamName')
 
     context = {
@@ -16,3 +16,14 @@ def games(request):
     }
 
     return render(request, 'playbyplay/games.html', context)
+
+def game_page(request, game_pk):
+    try:
+        game = Game.objects.get(gamePk = game_pk)
+    except Game.DoesNotExist:
+        raise Http404("Game does not exist!")
+    return render(request, 'playbyplay/game_page.html', {
+        'game': game
+    })
+
+
