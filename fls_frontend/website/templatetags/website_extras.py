@@ -5,16 +5,18 @@ import pytz
 from django import template
 
 from playbyplay import models
-from playbyplay.constants import gameStates
+from playbyplay.constants import gameStates, gameTypes
 
 register = template.Library()
 
 @register.filter()
 def gameStatus(value):
-    for state in gameStates:
-        if state[0] == value:
-            return state[1]
-    return "Unknown"
+    return check_constants(value, gameStates)
+
+
+@register.filter()
+def gameType(value):
+    return check_constants(value, gameTypes)
 
 
 @register.filter()
@@ -24,3 +26,10 @@ def checkOT(game):
         return " (OT)"
     except:
         return ""
+
+
+def check_constants(value, constant, unknown="Unknown"):
+    for state in constant:
+        if state[0] == value:
+            return state[1]
+    return unknown
