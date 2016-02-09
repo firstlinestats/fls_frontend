@@ -16,7 +16,7 @@
                 <tr>
                     <th>Player</th>
                     <th>Position</th>
-                    <th style="width:75px;">Team</th>
+                    <th style="width:80px;">Team</th>
                     <th>Age</th>
                     <th>Games</th>
                     <th>Goals</th>
@@ -28,6 +28,7 @@
                     <th>+/-</th>
                     <th>Shots</th>
                     <th>PIM</th>
+                    <th>TOI/Game</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,6 +48,7 @@
                     <td>{{ values.plusMinus }}</td>
                     <td>{{ values.shots }}</td>
                     <td>{{ values.penaltyMinutes }}</td>
+                    <td>{{ values.TOIGm }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

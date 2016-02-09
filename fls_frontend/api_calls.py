@@ -13,6 +13,11 @@ def get_game(id=None):
     return get_url(url)
 
 
+def get_game_boxscore(id=None):
+    url = api_urls.GAME.replace("<gamePk>", str(id)) + "boxscore"
+    return get_url(url)
+
+
 def get_teams(id=None):
     url = api_urls.TEAM_LIST
     if id is not None:

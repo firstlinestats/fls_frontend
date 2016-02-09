@@ -30,6 +30,11 @@ class GameScratchAdmin(admin.ModelAdmin):
 class GamePeriodAdmin(admin.ModelAdmin):
     pass
 
+
+class GoalieGameStatsAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(models.GoalieGameStats, GoalieGameStatsAdmin)
 admin.site.register(models.PlayByPlay, PlayByPlayAdmin)
 admin.site.register(models.Game, GameAdmin)
 admin.site.register(models.PlayerGameStats, PlayerGameStatsAdmin)
