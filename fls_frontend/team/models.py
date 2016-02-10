@@ -41,6 +41,7 @@ class Team(models.Model):
 
 
 class SeasonStats(models.Model):
+    date = models.DateField(auto_now=True)
     team = models.ForeignKey(Team)
     season = models.IntegerField()
     goalsAgainst = models.IntegerField()
@@ -51,3 +52,6 @@ class SeasonStats(models.Model):
     wins = models.IntegerField()
     losses = models.IntegerField()
     ot = models.IntegerField()
+
+    class Meta:
+        unique_together = ("date", "team")
