@@ -31,9 +31,9 @@
               <tr>
                 <td>{{ game.dateTime|date }}</td>
                 <td>{{ game.gameType|gameType }}</td>
-                <td><img height="17" width="17" src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ game.homeTeam.id }}">{{ game.homeTeam.shortName }}</a></td>
+                <td><img height="17" width="17" src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ game.homeTeam.id }}">{{ game.homeTeam.teamName }}</a></td>
                 <td class="text-center">{{ game.homeScore }} - {{ game.awayScore }}</td>
-                <td><img height="17" width="17" src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.awayTeam.id }}">{{ game.awayTeam.shortName }}</a></td>
+                <td><img height="17" width="17" src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.awayTeam.id }}">{{ game.awayTeam.teamName }}</a></td>
                 <td>{% if game.homeShots != None %}{{ game.homeShots|add:game.awayBlocked|add:game.homeMissed }} / {{ game.awayShots|add:game.homeBlocked|add:game.awayMissed }}{% endif %}</td>
                 <td>{{ game.gameState|gameStatus }}{{ game|checkOT }}</td>
                 <td>{{ game.dateTime|time }} EST</td>
