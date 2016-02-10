@@ -54,7 +54,8 @@ def players(request):
             gameStats[t]["G60"] = round(gameStats[t]["goals"] / gameStats[t]["timeOnIce"].total_seconds() * 60 * 60, 2)
             gameStats[t]["A60"] = round(gameStats[t]["assists"] / gameStats[t]["timeOnIce"].total_seconds() * 60 * 60, 2)
             gameStats[t]["P60"] = gameStats[t]["G60"] + gameStats[t]["A60"]
-            gameStats[t]["TOIGm"] = round(gameStats[t]["timeOnIce"].total_seconds() / games / 60, 2)
+            m, s = divmod(round(gameStats[t]["timeOnIce"].total_seconds() / games, 2), 60)
+            gameStats[t]["TOIGm"] = "%02d:%02d" % (m, s)
         else:
             gameStats[t]["G60"] = 0
             gameStats[t]["A60"] = 0
