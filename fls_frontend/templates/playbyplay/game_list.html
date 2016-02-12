@@ -25,16 +25,11 @@
                             <div class="col-md-4">                            
                                 <div class="row">
                                     <div class="col-md-12">
-                                        {{ form.status.label_tag }}                             
-                                        {{ form.status }}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
                                         {{ form.venues.label_tag }}                             
                                         {{ form.venues }}
                                     </div>
                                 </div>
+                                <br />
                                 <div class="row">                              
                                     <div class="col-md-12">
                                         <div class="form-group session-checkbox">
@@ -43,6 +38,7 @@
                                         </div>                                 
                                     </div>
                                 </div>
+                                <br />
                                 <div class="row">                              
                                     <div class="col-md-12">
                                         <div class="form-group text-right">
@@ -82,12 +78,24 @@
             });
 
             
-            $('#gamesFilter').submit(function(e){
-                $.ajax('/games/', $(this).serialize(), function(data){
-                   console.log(data)
+            $('#gamesFilter').submit(function(e) {
+            
+                $.ajax({
+                    data: $(this).serialize(),
+                    url: "/games/game_list_table/"
+                }).done(function(data) {
+                    console.log(data)
+                    $('#gamesTableContainer').html(data);
+                    $('#gamesList').DataTable({
+                        "iDisplayLength": 15,
+                        "order": [
+                            [0, "desc"]
+                        ]
+                    });
                 });
+
                 e.preventDefault();
-            }); 
+            });
     
         });
     </script>

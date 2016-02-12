@@ -11,9 +11,8 @@ import datetime
 
 # Create your views here.
 
-def game_list(request):
-    
-    form = GamesFilter()
+def game_list(request):    
+    form = GamesFilter(initial = {'seasons': Game.objects.latest("endDateTime").season })
     return render(request, 'playbyplay/game_list.html', {
         'active_page': 'games',
         'form' : form
@@ -22,6 +21,13 @@ def game_list(request):
 
 def game_list_table(request):
     if request.method == 'GET':
+        myDict = dict(request.GET)
+        if 'teams' in myDict:
+            teams = myDict['teams']
+
+            
+           
+
         currentSeason = Game.objects.latest("endDateTime").season
         games = Game.objects\
             .values('dateTime', 'gameType', 'awayTeam', 'homeTeam', 'awayTeam__abbreviation', 
