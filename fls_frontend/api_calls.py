@@ -25,8 +25,10 @@ def get_teams(id=None):
     return get_url(url)
 
 
-def get_standings():
+def get_standings(date=None):
     url = api_urls.STANDINGS
+    if date is not None:
+        url += "?date=" + date
     return get_url(url)
 
 

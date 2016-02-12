@@ -77,14 +77,22 @@
   </div>
 {% endblock %}
 {% block page_js %}
+    <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
+    <script src="{% static "js/d3.v3.min.js" %}"></script>
+    <script src="{% static "js/teamColors.js" %}"></script>
+    <script src="{% static "js/graphs/historicalStandings.js" %}"></script>
     <script>
         $(document).ready(function() {
             $('#recentgames').DataTable({
                 "iDisplayLength": 15,
                 "bSort": false
             });
+            var data = {{ divisions|safe }};
+            CreateHistorical("#Ahistorical", data["A"], "#currentA");
+            CreateHistorical("#Mhistorical", data["M"], "#currentM");
+            CreateHistorical("#Chistorical", data["C"], "#currentC");
+            CreateHistorical("#Phistorical", data["P"], "#currentP");
         });
     </script>
-    <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
 {% endblock %}
