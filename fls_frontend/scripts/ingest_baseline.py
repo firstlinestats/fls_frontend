@@ -30,7 +30,18 @@ def main():
     #getAwayShots()
     #getMissedShots()
     #findTeam()
-    findStandings(20152016)
+    #findStandings(20152016)
+    findBirthState()
+
+
+@transaction.atomic
+def findBirthState():
+    for player in pmodels.Player.objects.all():
+        j = json.loads(api_calls.get_player(player.id))
+        p = j["people"][0]
+        if "birthStateProvince" in p:
+            player.birthStateProvince = p["birthStateProvince"]
+            player.save()
 
 
 @transaction.atomic

@@ -1,5 +1,8 @@
 {% extends "wrappers/wrapper.html" %}
+
 {% load staticfiles %}
+{% load website_extras %}
+
 {% block page_css %}
     <link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
 {% endblock %}
@@ -16,8 +19,10 @@
                 <tr>
                     <th>Player</th>
                     <th>Position</th>
-                    <th style="width:80px;">Team</th>
+                    <th>Team</th>
                     <th>Age</th>
+                    <th>Height</th>
+                    <th>Weight</th>
                     <th>Games</th>
                     <th>Goals</th>
                     <th>Assists</th>
@@ -26,7 +31,10 @@
                     <th>A60</th>
                     <th>P60</th>
                     <th>+/-</th>
+                    <th>Hits</th>
                     <th>Shots</th>
+                    <th>Faceoffs Won</th>
+                    <th>Faceoff Percentage</th>
                     <th>PIM</th>
                     <th>TOI/Game</th>
                 </tr>
@@ -34,10 +42,12 @@
             <tbody>
                 {% for player, values in gameStats.items %}
                 <tr>
-                    <td>{{ values.player__fullName }}</td>
-                    <td>{{ values.player__primaryPositionCode }}</td>
-                    <td><img height="17" width="17" src='{% with 'images/team/'|add:values.player__currentTeam__abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ values.player__currentTeam }}">{{ values.player__currentTeam__shortName }}</a></td>
+                    <td><a href="/players/player/{{ values.player__id }}">{{ values.player__fullName }}</a></td>
+                    <td>{{ values.player__primaryPositionCode|position }}</td>
+                    <td><img height="17" width="17" src='{% with 'images/team/'|add:values.player__currentTeam__abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ values.player__currentTeam }}">{{ values.player__currentTeam__abbreviation }}</a></td>
                     <td>{{ values.age }}</td>
+                    <td>{{ values.player__height|fixHeight }}</td>
+                    <td>{{ values.player__weight }}</td>
                     <td>{{ values.games }}</td>
                     <td>{{ values.goals }}</td>
                     <td>{{ values.assists }}</td>
@@ -46,7 +56,10 @@
                     <td>{{ values.A60 }}</td>
                     <td>{{ values.P60 }}</td>
                     <td>{{ values.plusMinus }}</td>
+                    <td>{{ values.hits }}</td>
                     <td>{{ values.shots }}</td>
+                    <td>{{ values.faceOffWins }}</td>
+                    <td>{{ values.facPercent }}</td>
                     <td>{{ values.penaltyMinutes }}</td>
                     <td>{{ values.TOIGm }}</td>
                 </tr>

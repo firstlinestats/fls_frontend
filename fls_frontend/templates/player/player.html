@@ -1,0 +1,66 @@
+{% extends "wrappers/wrapper.html" %}
+
+{% load staticfiles %}
+{% load website_extras %}
+
+{% block page_css %}
+    <link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="well">
+                <div class="row" style="padding: 5px;">
+                    <div class="col-md-2">
+                        <img src='{% with 'images/team/'|add:player.currentTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}' class="img-responsive">
+                    </div>
+                    <div class="col-md-10">
+                        <h2>{{ player.fullName }} | #{{ player.primaryNumber }}</h2>
+                        {% if player.rookie %}<p>Rookie</p>{% endif %}
+                        <p><a target="_blank" href="https://www.nhl.com/player/{{ player.firstName }}-{{ player.lastName }}-{{ player.id }}">Link to Player page on NHL.com</a></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <th>Born</th>
+                                <td>{{ player.birthDate }}</td>
+                            </tr>
+                            <tr>
+                                <th>Birthplace</th>
+                                <td>{{ player|birth }}</td>
+                            </tr>
+                            <tr>
+                                <th>Handedness</th>
+                                <td>{{ player.shootsCatches }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <th></th>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block page_js %}
+    <script>
+        /*$(document).ready(function() {
+            $('#playerList').DataTable({
+                "iDisplayLength": 15,
+                "order": [[ 5, "desc" ]]
+            });
+        });*/
+    </script>
+    <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
+{% endblock %}

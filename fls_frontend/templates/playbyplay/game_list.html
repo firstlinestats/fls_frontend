@@ -1,0 +1,97 @@
+{% extends "wrappers/wrapper.html" %}
+{% load staticfiles %}
+{% block page_css %}
+    <link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "MultiSelect/css/multi-select.css" %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="well bs-component">                     
+                    
+                    <h3 class="filter-options">Filter Options</h3>
+                    <form id="gamesFilter" action="/games/" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ form.teams.label_tag }}                             
+                                {{ form.teams }}
+                            </div> 
+                            <div class="col-md-4">
+                                {{ form.seasons.label_tag }}                             
+                                {{ form.seasons }}
+                            </div>
+                            <div class="col-md-4">                            
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {{ form.status.label_tag }}                             
+                                        {{ form.status }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {{ form.venues.label_tag }}                             
+                                        {{ form.venues }}
+                                    </div>
+                                </div>
+                                <div class="row">                              
+                                    <div class="col-md-12">
+                                        <div class="form-group session-checkbox">
+                                            {{ form.session.label_tag }}                             
+                                            {{ form.session }}
+                                        </div>                                 
+                                    </div>
+                                </div>
+                                <div class="row">                              
+                                    <div class="col-md-12">
+                                        <div class="form-group text-right">
+                                            <input type="reset" class="btn btn-danger btn-sm"></input>
+                                            <input type="submit" href="#" class="btn btn-primary btn-sm"></input>
+                                        </div>                                 
+                                    </div>
+                                </div>
+                            </div>                       
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="gamesTableContainer" class="col-md-12"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block page_js %}
+    <script>
+        $(document).ready(function() {
+            $('#gamesSelect').multiSelect();
+            $('#id_teams').multiSelect();
+            $('#id_seasons').multiSelect();
+
+            $.ajax({
+              url: "/games/game_list_table/"
+            }).done(function(data) {
+                $('#gamesTableContainer').html(data);
+                $('#gamesList').DataTable({
+                    "iDisplayLength": 15,
+                    "order": [
+                        [0, "desc"]
+                    ]
+                });
+            });
+
+            
+            $('#gamesFilter').submit(function(e){
+                $.ajax('/games/', $(this).serialize(), function(data){
+                   console.log(data)
+                });
+                e.preventDefault();
+            }); 
+    
+        });
+    </script>
+    <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
+    <script src="{% static "MultiSelect/js/jquery.multi-select.js" %}"></script>
+{% endblock %}

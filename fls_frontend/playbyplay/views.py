@@ -10,6 +10,7 @@ from team.models import Team
 import datetime
 
 # Create your views here.
+
 def game_list(request):
     
     form = GamesFilter()
@@ -17,6 +18,7 @@ def game_list(request):
         'active_page': 'games',
         'form' : form
     })
+
 
 def game_list_table(request):
     if request.method == 'GET':
