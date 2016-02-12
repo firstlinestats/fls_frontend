@@ -37,3 +37,17 @@ h3.home-team {
     stroke-width: 2px;
 }
 
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: none;
+  stroke: steelblue;
+}
+
+.opacityfifty {
+    opacity: 0.5;
+}
+

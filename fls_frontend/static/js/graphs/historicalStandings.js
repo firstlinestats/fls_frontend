@@ -79,6 +79,7 @@ var CreateHistorical = function createHistorical(divid, data, tableid) {
         .datum(data[d])
         .attr("class", "line")
         .attr("d", line)
+        .attr("id", d.replace(" ", "") + "line")
         .style("stroke", function(v) {
           return get_color(d, false);
         });
@@ -86,7 +87,7 @@ var CreateHistorical = function createHistorical(divid, data, tableid) {
         .datum(data[d])
         .attr("class", "innerline")
         .attr("d", line)
-        .attr("id", d + "line")
+        .attr("id", d.replace(" ", "") + "innerline")
         .style("stroke", function(v) {
           return get_color(d, true);
         })
@@ -96,10 +97,15 @@ var CreateHistorical = function createHistorical(divid, data, tableid) {
       legendSpacing = 5;
   var box = svg.append("rect")
     .attr('width', 110)
-    .attr('height', (Object.keys(data).length + 1) * (legendSpacing + legendRectSize))
+    .attr('height', (Object.keys(data).length + 2) * (legendSpacing + legendRectSize))
     .attr('transform', "translate(" + (margin.left - legendRectSize) + ", " + legendRectSize + ")")
     .attr('fill', 'none')
     .attr('stroke', 'black')
+  var boxtext = svg.append("text")
+    .attr('x', 55)
+    .attr('y', (Object.keys(data).length + 2) * (legendSpacing + legendRectSize))
+    .style('font-size', '12px')
+    .text('Click to Toggle')
   var legend = svg.append("g")
       .selectAll("g")
       .data(Object.keys(data))
@@ -116,11 +122,23 @@ var CreateHistorical = function createHistorical(divid, data, tableid) {
       .attr('width', legendRectSize)
       .attr('height', legendRectSize)
       .style('fill', function(d) { return get_color(d, true); })
+      .attr('id', function(d) {
+          return d.replace(" ", "") + "legendrect";
+      })
+      .attr("onclick", function(d) {
+          return "toggleLine(\"" + d.replace(" ", "") + "\");";
+      })
       .style('stroke', function(d) { return get_color(d, false); });
    
   legend.append('text')
       .attr('x', legendRectSize + legendSpacing)
       .attr('y', legendRectSize - legendSpacing + (legendRectSize / 2))
+      .attr('id', function(d) {
+          return d.replace(" ", "") + "legendtext";
+      })
+      .attr("onclick", function(d) {
+          return "toggleLine(\"" + d.replace(" ", "") + "\");";
+      })
       .text(function(d) { return d; });
 
 
@@ -134,3 +152,14 @@ var CreateHistorical = function createHistorical(divid, data, tableid) {
     .text("firstlinestats.com")
 
 };
+
+function toggleLine(teamname) {
+    var id = "#" + teamname + "line";
+    var id2 = "#" + teamname + "innerline";
+    var lid = "#" + teamname + "legendtext";
+    var lid2 = "#" + teamname + "legendrect";
+    $(id).toggleClass("invisible");
+    $(id2).toggleClass("invisible");
+    $(lid).toggleClass("opacityfifty");
+    $(lid2).toggleClass("opacityfifty");
+}
