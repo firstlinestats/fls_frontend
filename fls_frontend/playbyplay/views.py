@@ -14,7 +14,7 @@ def games(request):
     if request.method == 'POST':
         print request.POST
         
-        games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:100]
+        games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-gamePk')[:100]
         
         data = serializers.serialize('json', games)
         return HttpResponse(data, content_type='application/json')
