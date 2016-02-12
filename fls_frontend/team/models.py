@@ -41,11 +41,11 @@ class Team(models.Model):
 
 
 class SeasonStats(models.Model):
-    date = models.DateField(auto_now=True)
+    date = models.DateField()
     team = models.ForeignKey(Team)
     season = models.IntegerField()
-    goalsAgainst = models.IntegerField()
-    goalsScored = models.IntegerField()
+    goalsAgainst = models.IntegerField(null=True, blank=True)
+    goalsScored = models.IntegerField(null=True, blank=True)
     points = models.IntegerField()
     gamesPlayed = models.IntegerField()
     streakCode = models.CharField(max_length=3, null=True, blank=True)

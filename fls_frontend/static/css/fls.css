@@ -33,3 +33,37 @@ h3.home-team {
 #ms-id_seasons {
     width: 300px;
 }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.innerline {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2px;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: none;
+  stroke: steelblue;
+}
+
+.opacityfifty {
+    opacity: 0.5;
+}
+

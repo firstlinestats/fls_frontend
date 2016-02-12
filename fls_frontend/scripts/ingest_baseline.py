@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import glob
+import time
 import django
 
 from datetime import datetime
@@ -28,8 +29,8 @@ def main():
     #ingest_pbp()
     #getAwayShots()
     #getMissedShots()
-    findTeam()
-    #findStandings(20152016)
+    #findTeam()
+    findStandings(20152016)
 
 
 @transaction.atomic
@@ -49,6 +50,7 @@ def findStandings(season):
             stat.wins = team["leagueRecord"]["wins"]
             stat.losses = team["leagueRecord"]["losses"]
             stat.ot = team["leagueRecord"]["ot"]
+            stat.date = datetime.now()
             try:
                 stat.streakCode = team["streak"]["streakCode"]
             except:
