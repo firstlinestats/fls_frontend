@@ -3,6 +3,7 @@ from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core import serializers
+from django.db.models import Q
 
 from .forms import GamesFilter
 from playbyplay.models import Game, PlayByPlay, PlayerGameStats, GoalieGameStats
@@ -12,7 +13,7 @@ import datetime
 # Create your views here.
 
 def game_list(request):    
-    form = GamesFilter(initial = {'seasons': Game.objects.latest("endDateTime").season })
+    form = GamesFilter()
     return render(request, 'playbyplay/game_list.html', {
         'active_page': 'games',
         'form' : form
@@ -21,22 +22,40 @@ def game_list(request):
 
 def game_list_table(request):
     if request.method == 'GET':
-        myDict = dict(request.GET)
-        if 'teams' in myDict:
-            teams = myDict['teams']
-
-            
-           
-
         currentSeason = Game.objects.latest("endDateTime").season
+        getValues = dict(request.GET)
+
+        kwargs = {
+            'gameState__in' : [6,7,8],
+            'season' : currentSeason
+        }
+        args = ()
+        
+        if 'teams' in getValues:
+            args = ( Q(awayTeam__in = getValues['teams']) | Q(homeTeam__in = getValues['teams']), )
+        if 'seasons' in getValues:
+            kwargs['season__in'] = getValues['seasons']
+        if 'venues' in getValues:
+            if getValues['venues'][0]:
+                kwargs['venue__name'] = getValues['venues'][0]
+        if 'gameType' in getValues:
+            kwargs['gameType__in'] = getValues['gameType']
+        
+
+        print getValues
+        print kwargs
+           
+        
         games = Game.objects\
             .values('dateTime', 'gameType', 'awayTeam', 'homeTeam', 'awayTeam__abbreviation', 
                 'homeTeam__abbreviation', 'homeTeam__id', 
                 'awayTeam__id', 'homeScore', 'awayScore', 'awayShots', 
                 'homeShots', 'awayBlocked', 'homeBlocked', 'awayMissed',
                 'homeMissed', 'gameState', 'endDateTime')\
-            .filter(season=currentSeason, gameState__in=[6,7,8]).order_by('-gamePk')
+            .filter(*args, **kwargs).order_by('-gamePk')
         return render(request, 'playbyplay/game_list_table.html', {'game_list' : games })
+
+
 
 
 

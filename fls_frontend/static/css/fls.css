@@ -10,6 +10,8 @@
 }
 h3.filter-options {
     margin-top: 0px;
+    margin-bottom: 0px;
+    cursor: pointer;
 }
 h3.away-team {
     margin-bottom: 0px;
@@ -76,4 +78,15 @@ h3.home-team {
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
     background-color: #18217b;
+}
+
+.filter-collapsed {
+  transform:rotate(0deg);
+  -ms-transform:rotate(0deg); /* IE 9 */
+  -webkit-transform:rotate(0deg); /* Safari and Chrome */
+}
+.filter-expanded {
+  transform:rotate(90deg);
+  -ms-transform:rotate(90deg); /* IE 9 */
+  -webkit-transform:rotate(90deg); /* Safari and Chrome */
 }

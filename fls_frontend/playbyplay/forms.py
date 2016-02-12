@@ -6,13 +6,13 @@ import constants
 
 class GamesFilter(forms.Form):
    
-    teams = forms.MultipleChoiceField(label='Teams', choices=constants.teamNames)
+    teams = forms.MultipleChoiceField(label='Specify Teams', choices=constants.teamNames)
     
     venues = forms.ModelChoiceField(widget=forms.Select(attrs={'class' : 'form-control input-sm'}), 
-        label='Venue', queryset=Venue.objects.all().order_by('name'), empty_label='All')
+        label='Venue', queryset=Venue.objects.values_list('name', flat=True), empty_label='All')
 
-    seasons = forms.ModelChoiceField(widget=forms.Select(attrs={'class' : 'form-control input-sm'}), 
-        label='Seasons', queryset=Game.objects.values_list('season', flat=True).distinct(), empty_label=None)
+    seasons = forms.ModelChoiceField(widget=forms.SelectMultiple(attrs={'class' : 'form-control input-sm'}), 
+        label='Specify Seasons', queryset=Game.objects.values_list('season', flat=True).distinct(), empty_label=None)
     
-    session = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(attrs={'class' : 'session-checkbox'}), 
-        choices=constants.gameTypes)
+    gameType = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(attrs={'class' : 'game-type-checkbox'}), 
+        choices=constants.gameTypes, initial=['PR', 'R', 'P', 'A'])
