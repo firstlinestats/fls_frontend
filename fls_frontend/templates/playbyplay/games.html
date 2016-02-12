@@ -7,70 +7,53 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-sm-12">
-                <div class="well bs-component">
-                    <h3 class="filter-options">Filter Options</h3>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <label>Teams:</label>                                    
-                            <select multiple="multiple" id="gamesSelect" class="form-control input-sm">
-                                {% for team in teams %}
-                                    <option value="{{ team.teamName }}">{{ team.teamName }}</option>
-                                {% endfor %}
-                            </select>
-                        </div> 
-                        <div class="col-sm-4">
-                            <label>Seasons:</label>  
-                            <select multiple="multiple" id="seasonSelect" class="form-control input-sm">
-                                <option value="20152016">2015 - 2016</option>    
-                            </select>
-                        </div>
-                        <div class="col-sm-4">                            
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label for="select">Status:</label>                                
-                                    <select class="form-control input-sm">
-                                        <option value disabled selected> Select a status </option>
-                                        <option value="1">Scheduled</option>
-                                        <option value="2">Pre-Game</option>
-                                        <option value="3">In Progress</option>
-                                        <option value="4">In Progress - Critical</option>
-                                        <option value="5">Game Over</option>
-                                        <option value="7">Final</option>                                        
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label>Venue:</label>                               
-                                    <select class="form-control input-sm">
-                                        <option value selected> Select a venue </option>                                        
-                                        {% for team in teams %}
-                                            <option value="{{ team.venue }}">{{ team.venue }}</option>
-                                        {% endfor %}                                    
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">                              
-                                <div class="col-sm-12">
-                                    <label>Sesson:</label>
-                                    <div class="form-group">
-                                        <label class="checkbox-inline"><input type="checkbox" value="">Regular</label>
-                                        <label class="checkbox-inline"><input type="checkbox" value="">Playoff</label>
-                                    </div>                                 
-                                </div>
-                            </div>
-                            <div class="row">                              
-                                <div class="col-sm-12">
-                                    <div class="form-group text-right">
-                                        <a href="#" class="btn btn-danger btn-sm">Reset</a>
-                                        <a href="#" class="btn btn-primary btn-sm">Submit</a>
-                                    </div>                                 
-                                </div>
-                            </div>
-                        </div>                       
-                    </div>
+            <div class="col-md-12">
+                <div class="well bs-component">                     
                     
+                    <h3 class="filter-options">Filter Options</h3>
+                    <form id="gamesFilter" action="/games/" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ form.teams.label_tag }}                             
+                                {{ form.teams }}
+                            </div> 
+                            <div class="col-md-4">
+                                {{ form.seasons.label_tag }}                             
+                                {{ form.seasons }}
+                            </div>
+                            <div class="col-md-4">                            
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {{ form.status.label_tag }}                             
+                                        {{ form.status }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {{ form.venues.label_tag }}                             
+                                        {{ form.venues }}
+                                    </div>
+                                </div>
+                                <div class="row">                              
+                                    <div class="col-md-12">
+                                        <div class="form-group session-checkbox">
+                                            {{ form.session.label_tag }}                             
+                                            {{ form.session }}
+                                        </div>                                 
+                                    </div>
+                                </div>
+                                <div class="row">                              
+                                    <div class="col-md-12">
+                                        <div class="form-group text-right">
+                                            <input type="reset" class="btn btn-danger btn-sm"></input>
+                                            <input type="submit" href="#" class="btn btn-primary btn-sm"></input>
+                                        </div>                                 
+                                    </div>
+                                </div>
+                            </div>                       
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -116,11 +99,18 @@
     <script>
         $(document).ready(function() {
             $('#gamesSelect').multiSelect();
-            $('#seasonSelect').multiSelect();
+            $('#id_teams').multiSelect();
+            $('#id_seasons').multiSelect();
             $('#gamesList').DataTable({
                 "iDisplayLength": 15,
                 "order": [[ 0, "desc" ]]
             });
+            $('#gamesFilter').submit(function(e){
+                $.post('/games/', $(this).serialize(), function(data){
+                   console.log(data)
+                });
+                e.preventDefault();
+            }); 
     
         });
     </script>

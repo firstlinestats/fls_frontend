@@ -17,4 +17,19 @@ h3.away-team {
 h3.home-team {
     margin-top: 0px;
 }
+.session-checkbox li {
+    display: inline;
+    text-decoration: none;
+    width: 50%;
+    float: left;
+}
+.session-checkbox li label {
+    font-weight: normal;
+}
 
+#ms-id_teams {
+    width: 300px;
+}
+#ms-id_seasons {
+    width: 300px;
+}

@@ -1,21 +1,37 @@
 from django.shortcuts import render
 from django.http import Http404
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.core import serializers
+
+from .forms import GamesFilter
 from playbyplay.models import Game, PlayByPlay, PlayerGameStats, GoalieGameStats
 from team.models import Team
 import datetime
 
 # Create your views here.
 def games(request):
-    games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:100]
-    teams = Team.objects.all().order_by('teamName')
+    if request.method == 'POST':
+        print request.POST
+        
+        games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:100]
+        
+        data = serializers.serialize('json', games)
+        return HttpResponse(data, content_type='application/json')
 
-    context = {
-        'active_page': 'games',
-        'game_list': games,
-        'teams' : teams
-    }
+    else:
+        games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:100]
+        form = GamesFilter()
+        context = {
+            'active_page': 'games',
+            'game_list': games,
+            'form' : form
+        }
 
-    return render(request, 'playbyplay/games.html', context)
+        return render(request, 'playbyplay/games.html', context)
+
+
+
 
 def game_page(request, game_pk):
     try:

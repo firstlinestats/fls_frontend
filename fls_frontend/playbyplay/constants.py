@@ -78,3 +78,38 @@ shotTypes = (
     ("DEFLECT", "Deflected"),
     ("UNSPECIFIED", "Unspecified")
 )
+
+teamNames = (
+    (21, 'Avalanche'),
+    (16, 'Blackhawks'),
+    (29, 'Blue Jackets'),
+    (19, 'Blues'),
+    (6, 'Bruins'),
+    (8, 'Canadiens'),
+    (23, 'Canucks'),
+    (15, 'Capitals'),
+    (53, 'Coyotes'),
+    (1, 'Devils'),
+    (24, 'Ducks'),
+    (20, 'Flames'),
+    (4, 'Flyers'),
+    (12, 'Hurricanes'),
+    (2, 'Islanders'),
+    (52, 'Jets'),
+    (26, 'Kings'),
+    (14, 'Lightning'),
+    (10, 'Maple Leafs'),
+    (22, 'Oilers'), 
+    (13, 'Panthers'), 
+    (5, 'Penguins'), 
+    (18, 'Predators'), 
+    (3, 'Rangers'), 
+    (17, 'Red Wings'), 
+    (7, 'Sabres'), 
+    (9, 'Senators'), 
+    (28, 'Sharks'), 
+    (25, 'Stars'), 
+    (30, 'Wild')
+)
+
+
