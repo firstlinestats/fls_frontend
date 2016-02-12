@@ -15,6 +15,7 @@ def player(request, player_id):
         'active_page': 'players'
     }
     context['player'] = get_object_or_404(Player, id=player_id)
+    
     return render(request, 'player/player.html', context)
 
 
