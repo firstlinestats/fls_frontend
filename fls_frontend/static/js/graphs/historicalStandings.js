@@ -122,6 +122,7 @@ var CreateHistorical = function createHistorical(divid, data, tableid) {
       .attr('width', legendRectSize)
       .attr('height', legendRectSize)
       .style('fill', function(d) { return get_color(d, true); })
+      .attr('cursor', 'pointer')
       .attr('id', function(d) {
           return d.replace(" ", "") + "legendrect";
       })
@@ -133,6 +134,7 @@ var CreateHistorical = function createHistorical(divid, data, tableid) {
   legend.append('text')
       .attr('x', legendRectSize + legendSpacing)
       .attr('y', legendRectSize - legendSpacing + (legendRectSize / 2))
+      .attr('cursor', 'pointer')
       .attr('id', function(d) {
           return d.replace(" ", "") + "legendtext";
       })
