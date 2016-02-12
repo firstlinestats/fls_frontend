@@ -1,6 +1,7 @@
 from django import forms
 from team.models import Team
 from team.models import Venue
+from playbyplay.models import Game
 import constants
 
 class GamesFilter(forms.Form):
@@ -10,7 +11,8 @@ class GamesFilter(forms.Form):
     )
     teams = forms.MultipleChoiceField(label='Teams', choices=constants.teamNames)
     
-    seasons = forms.MultipleChoiceField(label='Seasons', choices=a)
+ 
+    seasons = forms.MultipleChoiceField(label='Seasons', choices=a, initial='test')
     
     status = forms.ChoiceField(widget=forms.Select(attrs={'class' : 'form-control input-sm'}), 
         label='Status', choices=constants.gameStates)

@@ -10,26 +10,25 @@ from team.models import Team
 import datetime
 
 # Create your views here.
-def games(request):
-    if request.method == 'POST':
-        print request.POST
-        
-        games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:100]
-        
-        data = serializers.serialize('json', games)
-        return HttpResponse(data, content_type='application/json')
+def game_list(request):
+    
+    form = GamesFilter()
+    return render(request, 'playbyplay/game_list.html', {
+        'active_page': 'games',
+        'form' : form
+    })
 
-    else:
-        games = Game.objects.filter(dateTime__date__lte=datetime.date.today()).order_by('-dateTime', '-gamePk')[:100]
-        form = GamesFilter()
-        context = {
-            'active_page': 'games',
-            'game_list': games,
-            'form' : form
-        }
-
-        return render(request, 'playbyplay/games.html', context)
-
+def game_list_table(request):
+    if request.method == 'GET':
+        currentSeason = Game.objects.latest("endDateTime").season
+        games = Game.objects\
+            .values('dateTime', 'gameType', 'awayTeam', 'homeTeam', 'awayTeam__abbreviation', 
+                'homeTeam__abbreviation', 'homeTeam__id', 
+                'awayTeam__id', 'homeScore', 'awayScore', 'awayShots', 
+                'homeShots', 'awayBlocked', 'homeBlocked', 'awayMissed',
+                'homeMissed', 'gameState', 'endDateTime')\
+            .filter(season=currentSeason, gameState__in=[6,7,8]).order_by('-gamePk')
+        return render(request, 'playbyplay/game_list_table.html', {'game_list' : games })
 
 
 
