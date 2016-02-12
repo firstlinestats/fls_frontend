@@ -31,6 +31,15 @@ def birth(player):
 
 
 @register.filter()
+def handedness(value):
+    if value == "R":
+        return "Right"
+    elif value == "L":
+        return "Left"
+    return value
+
+
+@register.filter()
 def fixHeight(value):
     if len(value) == 5:
         return value[0:3] + "0" + value[3:]
