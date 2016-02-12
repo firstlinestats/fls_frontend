@@ -146,7 +146,6 @@
                                 <tbody>
                                     {% for goalie in game.goalieStats %}
                                     <tr>   
-                                    
                                         <td>{{ goalie.player.fullName }}</td>
                                         <td><img height="17" width="17" src='{% with 'images/team/'|add:goalie.team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ goalie.team.id }}">{{ goalie.team.abbreviation }}</td>
                                         <td></td>
@@ -158,7 +157,6 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                    
                                     </tr>
                                     {% endfor %}                           
                                 </tbody>
