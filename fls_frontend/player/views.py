@@ -9,7 +9,7 @@ import helpers
 import datetime
 
 # Create your views here.
-def players(request):
+def skaters(request):
     context = {
         'active_page' : 'players'
     }
