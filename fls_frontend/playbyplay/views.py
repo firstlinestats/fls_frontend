@@ -40,18 +40,13 @@ def game_list_table(request):
                 kwargs['venue__name'] = getValues['venues'][0]
         if 'gameType' in getValues:
             kwargs['gameType__in'] = getValues['gameType']
-        
 
-        print getValues
-        print kwargs
-           
-        
         games = Game.objects\
             .values('dateTime', 'gameType', 'awayTeam', 'homeTeam', 'awayTeam__abbreviation', 
                 'homeTeam__abbreviation', 'homeTeam__id', 
                 'awayTeam__id', 'homeScore', 'awayScore', 'awayShots', 
                 'homeShots', 'awayBlocked', 'homeBlocked', 'awayMissed',
-                'homeMissed', 'gameState', 'endDateTime')\
+                'homeMissed', 'gameState', 'endDateTime', 'gamePk')\
             .filter(*args, **kwargs).order_by('-gamePk')
         return render(request, 'playbyplay/game_list_table.html', {'game_list' : games })
 
