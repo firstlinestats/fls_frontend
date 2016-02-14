@@ -51,6 +51,16 @@
         }).done(function(data) {
             getAjax(data);
         })
+        $('.filter-options img').click(function(e) {
+            var icon = $(e.target);
+            if (icon.hasClass('filter-collapsed')) {
+                $(e.target).removeClass('filter-collapsed');
+                $(e.target).addClass('filter-expanded');
+            } else {
+                $(e.target).removeClass('filter-expanded');
+                $(e.target).addClass('filter-collapsed');
+            }
+        })
     });
 
     function getAjax(data) {
