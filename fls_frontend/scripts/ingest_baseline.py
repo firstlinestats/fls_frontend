@@ -30,8 +30,8 @@ def main():
     #getAwayShots()
     #getMissedShots()
     #findTeam()
-    #findStandings(20152016)
-    findBirthState()
+    findStandings(20152016)
+    #findBirthState()
 
 
 @transaction.atomic

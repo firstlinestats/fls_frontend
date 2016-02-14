@@ -4,6 +4,7 @@ from team.models import Venue
 from playbyplay.models import Game
 import constants
 
+
 class GamesFilter(forms.Form):
    
     teams = forms.MultipleChoiceField(label='Specify Teams', choices=constants.teamNames)

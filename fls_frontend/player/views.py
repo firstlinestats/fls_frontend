@@ -23,6 +23,11 @@ def skaters(request):
     context = {
         'active_page' : 'players'
     }
+    return render(request, 'player/skaters.html', context)
+
+
+def skatersTable(request):
+    context = {}
     players = Player.objects.all()
     currentSeason = Game.objects.latest("endDateTime").season
     tgameStats = PlayerGameStats.objects\
@@ -77,4 +82,4 @@ def skaters(request):
             gameStats[t]["TOIGm"] = 0
             gameStats[t]["facPercent"] = 0
     context["gameStats"] = gameStats
-    return render(request, 'player/players.html', context)
+    return render(request, "player/skatersTable.html", context)

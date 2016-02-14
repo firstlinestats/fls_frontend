@@ -112,4 +112,8 @@ teamNames = (
     (30, 'Wild')
 )
 
-
+homeAway = (
+    (0, "Home"),
+    (1, "Away"),
+    (2, "All")
+)
