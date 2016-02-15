@@ -28,8 +28,9 @@ def skaters(request):
 
 def skatersTable(request):
     context = {}
-    players = Player.objects.all()
+    today = datetime.date.today()
     currentSeason = Game.objects.latest("endDateTime").season
+    start = datetime.datetime.now()
     tgameStats = PlayerGameStats.objects\
         .values("player__fullName", "player__currentTeam__shortName",
             "player__currentTeam", "player__primaryPositionCode",
@@ -44,15 +45,15 @@ def skatersTable(request):
         .filter(game__season=currentSeason)
     gameStats = {}
     pid = "player__id"
-    exclude = [pid, "player__birthDate", "player__primaryPositionCode",
+    exclude = set([pid, "player__birthDate", "player__primaryPositionCode",
         "player__fullName", "player__currentTeam",
         "player__currentTeam__abbreviation", "player__id",
-        "player__currentTeam__shortName", "player__height", "player__weight"]
+        "player__currentTeam__shortName", "player__height", "player__weight"])
     for t in tgameStats:
         if t[pid] not in gameStats:
             gameStats[t[pid]] = t
             gameStats[t[pid]]["games"] = 0
-            gameStats[t[pid]]["age"] = helpers.calculate_age(t["player__birthDate"])
+            gameStats[t[pid]]["age"] = helpers.calculate_age(t["player__birthDate"], today=today)
         else:
             gameStats[t[pid]]["games"] += 1
             for key in t:
@@ -63,6 +64,7 @@ def skatersTable(request):
                         gameStats[t[pid]][key] += datetime.timedelta(minutes=t[key].minute, seconds=t[key].second)
                     else:
                         gameStats[t[pid]][key] += t[key]
+    print datetime.datetime.now() - start
     for t in gameStats:
         games = gameStats[t]["games"]
         if games != 0:

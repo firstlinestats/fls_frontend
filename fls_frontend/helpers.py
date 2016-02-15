@@ -10,6 +10,7 @@ def combine_time(d1, d2):
     return fin
 
 
-def calculate_age(born):
-    today = date.today()
+def calculate_age(born, today=None):
+    if today is None:
+        today = date.today()
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))

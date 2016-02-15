@@ -32,7 +32,7 @@
         <tr>
             <td><a href="/players/player/{{ values.player__id }}">{{ values.player__fullName }}</a></td>
             <td>{{ values.player__primaryPositionCode|position }}</td>
-            <td><img height="17" width="17" src='{% with 'images/team/'|add:values.player__currentTeam__abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a class ='text-center'href="/teams/{{ values.player__currentTeam }}">{{ values.player__currentTeam__abbreviation }}</a></td>
+            <td><a class ='text-center'href="/teams/{{ values.player__currentTeam }}"><img height="17" width="17" src='{% with 'images/team/'|add:values.player__currentTeam__abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>{{ values.player__currentTeam__abbreviation }}</a></td>
             <td>{{ values.age }}</td>
             <td>{{ values.player__height|fixHeight }}</td>
             <td>{{ values.player__weight }}</td>
