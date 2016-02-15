@@ -1,7 +1,7 @@
 {% extends "wrappers/wrapper.html" %}
 {% load staticfiles %}
 {% block page_css %}
-    <link href="{% static "DataTables/dataTables.min.css" %}" rel="stylesheet">
+    <link href="{% static "DataTables/datatables.min.css" %}" rel="stylesheet">
     <link href="{% static "MultiSelect/css/multi-select.css" %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
@@ -150,6 +150,6 @@
     
         });
     </script>
-    <script src="{% static "DataTables/dataTables.min.js" %}"></script>
+    <script src="{% static "DataTables/datatables.min.js" %}"></script>
     <script src="{% static "MultiSelect/js/jquery.multi-select.js" %}"></script>
 {% endblock %}
