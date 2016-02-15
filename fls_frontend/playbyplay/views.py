@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import Q
 
-from .forms import GamesFilter
+from .forms import GamesFilter, GameStatsFilter
 from playbyplay.models import Game, PlayByPlay, PlayerGameStats, GoalieGameStats
 from team.models import Team
 import datetime
@@ -52,15 +52,22 @@ def game_list_table(request):
 
 
 
-
-
 def game_page(request, game_pk):
+    game = Game.objects.get(gamePk = game_pk)
+    form = GameStatsFilter()
+    return render(request, 'playbyplay/game_page.html', {
+        'game': game,
+        'form': form
+    })
+
+def game_tables(request):
     try:
-        game = Game.objects.get(gamePk = game_pk)
+        gamePk = dict(request.GET)['game_pk'][0]
+        game = Game.objects.get(gamePk = gamePk)
         if game.gameState in ['3', '4', '5', '6', '7']:
-            pbp = PlayByPlay.objects.filter(gamePk=game_pk)
-            playerStats = PlayerGameStats.objects.filter(game=game_pk).order_by('team', 'player__lastName')
-            goalieStats = GoalieGameStats.objects.filter(game=game_pk)
+            pbp = PlayByPlay.objects.filter(gamePk=gamePk)
+            playerStats = PlayerGameStats.objects.filter(game=gamePk).order_by('team', 'player__lastName')
+            goalieStats = GoalieGameStats.objects.filter(game=gamePk)
 
 
             #Goalie Stats
@@ -120,8 +127,10 @@ def game_page(request, game_pk):
             game.homeTOI = None   
     except Game.DoesNotExist:
         raise Http404("Game does not exist!")
-    return render(request, 'playbyplay/game_page.html', {
+    return render(request, 'playbyplay/game_tables.html', {
         'game': game
     })
+
+
 
 
