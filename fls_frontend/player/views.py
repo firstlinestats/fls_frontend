@@ -82,14 +82,16 @@ def skatersTable(request):
         if "seasons" in getValues and len(getValues["seasons"]) > 0:
             seasons = getValues["seasons"]
             kwargs['game__season__in'] = seasons
-        home_or_away = 2
+        home_or_away = None
         if "home_or_away" in getValues and len(getValues["home_or_away"]) > 0:
             try:
                 home_or_away = int(getValues["home_or_away"][0])
                 if home_or_away == 1:
+                    home_or_away = False
+                elif home_or_away == 2:
                     home_or_away = True
                 else:
-                    home_or_away = False
+                    home_or_away = None
             except:
                 pass
         positions = None
@@ -112,29 +114,50 @@ def skatersTable(request):
                 "faceOffWins", "faceoffTaken", "takeaways", "giveaways",
                 "shortHandedGoals", "shortHandedAssists", "blocked",
                 "plusMinus", "evenTimeOnIce", "powerPlayTimeOnIce",
-                "shortHandedTimeOnIce", "player__id")\
+                "shortHandedTimeOnIce", "player__id", "team",
+                "game__homeTeam", "game__season")\
             .filter(*args, **kwargs).iterator()
-        gameStats = {}
+        if bySeason is False:
+            gameStats = {}
+        else:
+            seasonStats = {}
         pid = "player__id"
         exclude = set([pid, "player__birthDate", "player__primaryPositionCode",
             "player__fullName", "player__currentTeam",
             "player__currentTeam__abbreviation", "player__id",
             "player__currentTeam__shortName", "player__height", "player__weight"])
         for t in tgameStats:
-            if t[pid] not in gameStats:
-                gameStats[t[pid]] = t
-                gameStats[t[pid]]["games"] = 0
-                gameStats[t[pid]]["age"] = helpers.calculate_age(t["player__birthDate"], today=today)
-            else:
-                gameStats[t[pid]]["games"] += 1
-                for key in t:
-                    if key not in exclude:
-                        if isinstance(gameStats[t[pid]][key], datetime.time):
-                            gameStats[t[pid]][key] = helpers.combine_time(gameStats[t[pid]][key], t[key])
-                        elif isinstance(gameStats[t[pid]][key], datetime.timedelta):
-                            gameStats[t[pid]][key] += datetime.timedelta(minutes=t[key].minute, seconds=t[key].second)
-                        else:
-                            gameStats[t[pid]][key] += t[key]
+            counts = True
+            if home_or_away is not None:
+                counts = False
+                if home_or_away is True and t["team"] == t["game__homeTeam"]:
+                    counts = True
+                elif home_or_away is False and t["team"] != t["game__homeTeam"]:
+                    counts = True
+            if counts is True:
+                if bySeason is True:
+                    if t["game__season"] not in seasonStats:
+                        seasonStats[t["game__season"]] = {}
+                    gameStats = seasonStats[t["game__season"]]
+                if t[pid] not in gameStats:
+                    gameStats[t[pid]] = t
+                    gameStats[t[pid]]["games"] = 0
+                    gameStats[t[pid]]["age"] = helpers.calculate_age(t["player__birthDate"], today=today)
+                else:
+                    gameStats[t[pid]]["games"] += 1
+                    for key in t:
+                        if key not in exclude:
+                            if isinstance(gameStats[t[pid]][key], datetime.time):
+                                gameStats[t[pid]][key] = helpers.combine_time(gameStats[t[pid]][key], t[key])
+                            elif isinstance(gameStats[t[pid]][key], datetime.timedelta):
+                                gameStats[t[pid]][key] += datetime.timedelta(minutes=t[key].minute, seconds=t[key].second)
+                            else:
+                                gameStats[t[pid]][key] += t[key]
+        if bySeason is True:
+            gameStats = {}
+            for key in seasonStats:
+                for pid in seasonStats[key]:
+                    gameStats[str(key)+"|"+str(pid)] = seasonStats[key][pid]
         print datetime.datetime.now() - start
         for t in gameStats:
             games = gameStats[t]["games"]
