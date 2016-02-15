@@ -9,312 +9,142 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 text-center">
-                <img src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="away-team">{{ game.awayTeam }}</h3>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h4>at</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="home-team">{{ game.homeTeam }}</h3>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3>{{ game.awayScore }} - {{ game.homeScore }}</h3>
-                    </div>
+            <img src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="away-team">{{ game.awayTeam }}</h3>
                 </div>
             </div>
-            <div class="col-md-4 text-center">
-                <img src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>at</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="home-team">{{ game.homeTeam }}</h3>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>{{ game.awayScore }} - {{ game.homeScore }}</h3>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 text-left">
-                <p><strong>{{ game.dateTime }} EST</strong></p>
-            </div>
-            <div class="col-md-6 text-right">
-                <p><strong>{{ game.gameState|gameStatus }}{{ game|checkOT }}</strong></p>
-            </div>
-        </div>
+        <div class="col-md-4 text-center">
+        <img src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'>
     </div>
+</div>
+<div class="row">
+    <div class="col-md-6 text-left">
+        <p><strong>{{ game.dateTime }} EST</strong></p>
+    </div>
+    <div class="col-md-6 text-right">
+        <p><strong>{{ game.gameState|gameStatus }}{{ game|checkOT }}</strong></p>
+    </div>
+</div>
+</div>
 <div class="container game-content">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="well bs-component">
-                <div class="row">
-                    <div class="col-md-12">
-                        
-                    </div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="well bs-component">
+            <h4 class="filter-options" data-toggle="collapse" data-target="#gamesFilter">
+            Filter Options
+            <img class="filter-collapsed" height="20" width="20" style="float: right"src="/static/images/forward-arrow.svg ">
+            </h4>
+            <div class="row">
+                <div class="col-md-12">
+                    <form id="gamesFilter"  class="collapse" action="/games/" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ form.strength.label_tag }}
+                                {{ form.strength }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.scoreSituation.label_tag }}
+                                {{ form.scoreSituation }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.period.label_tag }}
+                                {{ form.period }}
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group text-right">
+                                    <input type="reset" class="btn btn-danger btn-sm"></input>
+                                    <input type="submit" href="#" class="btn btn-primary btn-sm"></input>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#tableView" data-toggle="tab" aria-expanded="true">Table View</a></li>
-                <li class=""><a href="#graphView" data-toggle="tab" aria-expanded="false">Graph View</a></li>
-            </ul>
-            <div id="gameTabContent" class="tab-content">
-                <div class="tab-pane fade active in" id="tableView">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Team Statistics</h3>
-                            <table class="table table-striped table-hover ">
-                                <thead>
-                                    <tr>
-                                        <th title="Team">Team</th>
-                                        <th title="On-Ice Goals For Total">GF</th>
-                                        <th title="On-Ice Shots-On-Goal For Total">SF</th>
-                                        <th title="Missed Shots For">MSF</th>
-                                        <th title="Blocked Shots">BSF</th>
-                                        <th title="Corsi For Total">CF</th>
-                                        <th title="On-Ice Scoring Chances For Total">SCF</th>
-                                        <th title="On-Ice High-Danger Scoring Chances For Total">HSCF</th>
-                                        <th title="Offensive Zone Starts">ZSO</th>
-                                        <th title="Hits">HIT</th>
-                                        <th title="Penalties">PN</th>
-                                        <th title="Faceoffs Won">FO_W</th>
-                                        <th title="Time On Ice">TOI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><img height="17" width="17" src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.awayTeam.id }}">{{ game.awayTeam.abbreviation }}</td>
-                                        <td>{{ game.awayScore }}</td>
-                                        <td>{{ game.awayShots }}</td>
-                                        <td>{{ game.awayMSF }}</td>
-                                        <td>{{ game.awayBSF }}</td>
-                                        <td>{{ game.awayCorsi }}</td>
-                                        <td>{{ game.awaySCF }}</td>
-                                        <td>{{ game.awayHSCF }}</td>
-                                        <td>{{ game.awayZSO }}</td>
-                                        <td>{{ game.awayHIT }}</td>
-                                        <td>{{ game.awayPN }}</td>
-                                        <td>{{ game.awayFO_W }}</td>
-                                        <td>{{ game.awayTOI }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img height="17" width="17" src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.homeTeam.id }}">{{ game.homeTeam.abbreviation }}</td>
-                                        <td>{{ game.homeScore }}</td>
-                                        <td>{{ game.homeShots }}</td>
-                                        <td>{{ game.homeMSF }}</td>
-                                        <td>{{ game.homeBSF }}</td>
-                                        <td>{{ game.homeCorsi }}</td>
-                                        <td>{{ game.homeSCF }}</td>
-                                        <td>{{ game.homeHSCF }}</td>
-                                        <td>{{ game.homeZSO }}</td>
-                                        <td>{{ game.homeHIT }}</td>
-                                        <td>{{ game.homePN }}</td>
-                                        <td>{{ game.homeFO_W }}</td>
-                                        <td>{{ game.homeTOI }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Goalie Statistics</h3>
-                            <table class="table table-striped table-hover ">
-                                <thead>
-                                    <tr>
-                                        <th title="Name">Name</th>
-                                        <th title="Team">Team</th>
-                                        <th title="Unknown-Danger Goals">GU</th>
-                                        <th title="Unknown-Danger Saves">SU</th>
-                                        <th title="Low-Danger Goals">G.L</th>
-                                        <th title="Low-Danger Saves">S.L</th>
-                                        <th title="Medium-Danger Goals">G.M</th>
-                                        <th title="Medium-Danger Saves">S.M</th>
-                                        <th title="High-Danger Goals">G.H</th>
-                                        <th title="High-Danger Saves">S.H</th>
-                                        <th title="Time On Ice (Minutes)">TOI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for goalie in game.goalieStats %}
-                                    <tr>   
-                                        <td>{{ goalie.player.fullName }}</td>
-                                        <td><img height="17" width="17" src='{% with 'images/team/'|add:goalie.team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ goalie.team.id }}">{{ goalie.team.abbreviation }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    {% endfor %}                           
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Away Players</h3>
-                            <table id="awayPlayers" class="table table-striped table-hover ">
-                                <thead>
-                                    <tr>
-                                        <th title="Name">Name</th>
-                                        <th title="Position">Pos</th>
-                                        <th title="Goals Scored">G</th>
-                                        <th title="First Assists">A1</th>
-                                        <th title="Second Assists">A2</th>
-                                        <th title="Total Points">P</th>
-                                        <th title="Individual High-Danger Scoring Chances">iHSC</th>
-                                        <th title="Individual Scoring Chances">iSC</th>
-                                        <th title="Individual Shot Attempts">iCF</th>
-                                        <th title="On-Ice Corsi Differential">C+/-</th>
-                                        <th title="On-Ice Fenwick Differential">F+/-</th>
-                                        <th title="On0Ice Goal Differential">G+/-</th>
-                                        <th title="Corsi For Total">CF</th>
-                                        <th title="Fenwick For Total">FF</th>
-                                        <th title="Offensive Zone Stats">ZSO</th>
-                                        <th title="Defensive Zone Starts">ZSD</th>
-                                        <th title="Shots Attempts Blocked By Play">AB</th>
-                                        <th title="Faceoffs Won">FO_W</th>
-                                        <th title="Faceoffs Lost">FO_L</th>
-                                        <th title="Hits">HIT+</th>
-                                        <th title="Hits Taken">HIT-</th>
-                                        <th title="Penalties">PN+</th>
-                                        <th title="Penalties Drawn">PN-</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for player in game.awayPlayers %}
-                                        <tr>
-                                            <td>{{ player.player }}</td>
-                                            <td>{{ player.player.primaryPositionCode }}</td>
-                                            <td>{{ player.goals }}</td>
-                                            <td>{{ player.assists }}</td>
-                                            <td></td>
-                                            <td>{{ player.points }}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>{{ player.faceOffWins }}</td>
-                                            <td>{{ player.faceOffLost }}</td>
-                                            <td>{{ player.hits }}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    {% endfor %}                                   
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Home Players</h3>
-                            <table id="homePlayers" class="table table-striped table-hover ">
-                                <thead>
-                                    <tr>
-                                        <th title="Name">Name</th>
-                                        <th title="Position">Pos</th>
-                                        <th title="Goals Scored">G</th>
-                                        <th title="First Assists">A1</th>
-                                        <th title="Second Assists">A2</th>
-                                        <th title="Total Points">P</th>
-                                        <th title="Individual High-Danger Scoring Chances">iHSC</th>
-                                        <th title="Individual Scoring Chances">iSC</th>
-                                        <th title="Individual Shot Attempts">iCF</th>
-                                        <th title="On-Ice Corsi Differential">C+/-</th>
-                                        <th title="On-Ice Fenwick Differential">F+/-</th>
-                                        <th title="On0Ice Goal Differential">G+/=</th>
-                                        <th title="Corsi For Total">CF</th>
-                                        <th title="Fenwick For Total">FF</th>
-                                        <th title="Offensive Zone Stats">ZSO</th>
-                                        <th title="Defensive Zone Starts">ZSD</th>
-                                        <th title="Shots Attempts Blocked By Play">AB</th>
-                                        <th title="Faceoffs Won">FO_W</th>
-                                        <th title="Faceoffs Lost">FO_L</th>
-                                        <th title="Hits">HIT+</th>
-                                        <th title="Hits Taken">HIT-</th>
-                                        <th title="Penalties">PN+</th>
-                                        <th title="Penalties Drawn">PN-</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for player in game.homePlayers %}
-                                        <tr>
-                                            <td>{{ player.player }}</td>
-                                            <td>{{ player.player.primaryPositionCode }}</td>
-                                            <td>{{ player.goals }}</td>
-                                            <td>{{ player.assists }}</td>
-                                            <td></td>
-                                            <td>{{ player.points }}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>{{ player.faceOffWins }}</td>
-                                            <td>{{ player.faceOffLost }}</td>
-                                            <td>{{ player.hits }}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    {% endfor %}                                   
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="graphView">
-                    <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
-                </div>
-            </div>
+            
         </div>
     </div>
 </div>
+<div class="row">
+    <div id='tableLoading' class="col-md-6 col-md-offset-3">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar"
+                aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                Fetching Data
+            </div>
+        </div>
+    </div>
+    <div id="gameStatsContent" class="col-md-12" style="display: none">
+        
+    </div>
+</div>
+</div>
 {% endblock %}
 {% block page_js %}
-    <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
-    <script>
-    /*
-        $('#homePlayers').DataTable({
-            "paging":   false,
-            "searching": false,
-            "info":     false
+<script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
+<script>
+    $(document).ready(function(){
+        $.ajax({
+          url: "/games/game_tables?game_pk={{ game.gamePk }}"
+        }).done(function(data) {
+            $('#gameStatsContent').html(data);
+            /*
+            $('#gamesList').DataTable({
+                "iDisplayLength": 15,
+                "order": [
+                    [0, "desc"]
+                ]
+            });*/
+            $('#tableLoading').toggle();
+            $('#gameStatsContent').toggle();
         });
-        $('#awayPlayers').DataTable({
-            "paging":   false,
-            "searching": false,
-            "info":     false
-        });*/
-    </script>
 
+        $('.filter-options img').click(function(e) {
+            var icon = $(e.target);
+            if (icon.hasClass('filter-collapsed')) {
+                $(e.target).removeClass('filter-collapsed');
+                $(e.target).addClass('filter-expanded');
+            } else {
+                $(e.target).removeClass('filter-expanded');
+                $(e.target).addClass('filter-collapsed');
+            }
+        });
+    })
+/*
+$('#homePlayers').DataTable({
+"paging":   false,
+"searching": false,
+"info":     false
+});
+$('#awayPlayers').DataTable({
+"paging":   false,
+"searching": false,
+"info":     false
+});*/
+</script>
 {% endblock %}
