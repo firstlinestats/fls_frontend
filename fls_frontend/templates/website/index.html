@@ -4,7 +4,7 @@
 
 {% load staticfiles %}
 {% block page_css %}
-    <link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "DataTables/dataTables.min.css" %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
   <div class="container">
@@ -77,8 +77,7 @@
   </div>
 {% endblock %}
 {% block page_js %}
-    <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
+    <script src="{% static "DataTables/dataTables.min.js" %}"></script>
     <script src="{% static "js/d3.v3.min.js" %}"></script>
     <script src="{% static "js/teamColors.js" %}"></script>
     <script src="{% static "js/graphs/historicalStandings.js" %}"></script>

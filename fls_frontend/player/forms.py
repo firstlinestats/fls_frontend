@@ -11,14 +11,14 @@ from team.models import Venue
 
 
 class PlayerStatsFilter(forms.Form):
-    teams = forms.MultipleChoiceField(label='Specify Current Teams',
+    teams = forms.MultipleChoiceField(label='Only Games Involving',
         choices=teamNames)
     venues = forms.ModelMultipleChoiceField(label='Specify Venues',
         queryset=Venue.objects.values_list('name', flat=True))
     home_or_away = forms.ChoiceField(choices=homeAway, initial=2,
         label="Home or Away",
         widget=forms.Select(attrs={'class': 'form-control input-sm'}))
-    toi = forms.IntegerField(min_value=0, label="Time On Ice",
+    toi = forms.IntegerField(min_value=0, label="TOI Minimum (Minutes)",
         widget=forms.NumberInput(attrs={'class': 'form-control input-sm'}))
     position = forms.MultipleChoiceField(label='Position',
         choices=skaterPositions)

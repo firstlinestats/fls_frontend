@@ -1,7 +1,7 @@
 {% extends "wrappers/wrapper.html" %}
 {% load staticfiles %}
 {% block page_css %}
-    <link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "DataTables/dataTables.min.css" %}" rel="stylesheet">
     <link href="{% static "MultiSelect/css/multi-select.css" %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
@@ -81,15 +81,24 @@
               url: "/games/game_list_table/"
             }).done(function(data) {
 
+                $('#tableLoading').toggle();
+                $('#gamesTableContainer').toggle();
                 $('#gamesTableContainer').html(data);
                 $('#gamesList').DataTable({
                     "iDisplayLength": 15,
                     "order": [
                         [0, "desc"]
+                    ],
+                    responsive: true,
+                    aLengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
+                    fixedHeader: {
+                        header: true,
+                    },
+                    dom: 'lfrtiBp',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf'
                     ]
                 });
-                $('#tableLoading').toggle();
-                $('#gamesTableContainer').toggle();
             });
 
             $('input[type=reset]').click(function(e) {
@@ -110,6 +119,15 @@
                         "iDisplayLength": 15,
                         "order": [
                             [0, "desc"]
+                        ],
+                        responsive: true,
+                        aLengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
+                        fixedHeader: {
+                            header: true,
+                        },
+                        dom: 'lfrtiBp',
+                        buttons: [
+                            'copy', 'csv', 'excel', 'pdf'
                         ]
                     });
                     $('#tableLoading').toggle();
@@ -132,7 +150,6 @@
     
         });
     </script>
-    <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
-    <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
+    <script src="{% static "DataTables/dataTables.min.js" %}"></script>
     <script src="{% static "MultiSelect/js/jquery.multi-select.js" %}"></script>
 {% endblock %}
