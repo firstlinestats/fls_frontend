@@ -4,8 +4,10 @@
 {% load website_extras %}
 
 {% block page_css %}
-    <link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "DataTables/css/dataTables.responsive.min.css" %}" rel="stylesheet">
+<link href="{% static "DataTables/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+<link href="{% static "DataTables/css/dataTables.responsive.min.css" %}" rel="stylesheet">
+<link href="{% static "MultiSelect/css/multi-select.css" %}" rel="stylesheet">
+<link href="{% static "datepicker/css/datepicker.css" %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -19,6 +21,70 @@
                 </h4>
                 <form id="playersFilter" class="collapse" action="/games/" method="post">
                     {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form.teams.label_tag }}
+                            {{ form.teams }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.seasons.label_tag }}
+                            {{ form.seasons }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.venues.label_tag }}                             
+                            {{ form.venues }}
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:3%;">
+                        <div class="col-md-4">
+                            {{ form.position.label_tag }}
+                            {{ form.position }}
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.home_or_away.label_tag }}
+                                    {{ form.home_or_away }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.toi.label_tag }}
+                                    {{ form.toi }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="margin-top:10%;">
+                                    <div class="form-group session-checkbox">
+                                        {{ form.game_type.label_tag }}                             
+                                        {{ form.game_type }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.date_start.label_tag }}
+                                    {{ form.date_start }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.date_end.label_tag }}
+                                    {{ form.date_end }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6" style="margin-top:10%;">
+                                    {{ form.divide_by_season }}
+                                    {{ form.divide_by_season.label_tag }}
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group text-right" style="margin-top:25%;">
+                                        <input type="reset" class="btn btn-danger btn-sm"></input>
+                                        <input type="submit" href="#" class="btn btn-primary btn-sm"></input>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -45,9 +111,13 @@
 {% block page_js %}
 <script>
     $(document).ready(function() {
+        $("#id_teams").multiSelect();
+        $('#id_seasons').multiSelect();
+        $("#id_venues").multiSelect();
+        $("#id_position").multiSelect();
+        $('.datepicker').datepicker();
         $.ajax({
             url: "/players/skater_list_table/",
-            error: function(ts) { alert(ts.responseText) }
         }).done(function(data) {
             getAjax(data);
         })
@@ -61,6 +131,27 @@
                 $(e.target).addClass('filter-collapsed');
             }
         })
+
+        $('input[type=reset]').click(function(e) {
+            $("#id_seasons").multiSelect('deselect_all');
+            $("#id_teams").multiSelect('deselect_all');
+            $("#id_venues").multiSelect('deselect_all');
+            $("#id_position").multiSelect('deselect_all');
+        });
+        $('#playersFilter').submit(function(e) {
+
+            $('#skatersTableContainer').toggle();
+            $('#tableLoading').toggle();
+        
+            $.ajax({
+                data: $(this).serialize(),
+                url: "/players/skater_list_table/"
+            }).done(function(data) {
+                getAjax(data);
+            });
+
+            e.preventDefault();
+        });
     });
 
     function getAjax(data) {
@@ -77,4 +168,6 @@
 <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}"></script>
 <script src="{% static "DataTables/js/dataTables.bootstrap.min.js" %}"></script>
 <script src="{% static "DataTables/js/dataTables.responsive.min.js" %}"></script>
+<script src="{% static "MultiSelect/js/jquery.multi-select.js" %}"></script>
+<script src="{% static "datepicker/js/bootstrap-datepicker.js" %}"></script>
 {% endblock %}

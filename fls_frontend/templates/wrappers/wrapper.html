@@ -10,9 +10,9 @@
     <!-- Bootstrap core CSS -->
     {% load staticfiles %}
     <link rel='shortcut icon' type='image/x-icon' href="{% static "images/favicon.png" %}" />
+    {% block page_css %}{% endblock %}
     <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
     <link href="{% static "css/fls.css" %}" rel="stylesheet">
-    {% block page_css %}{% endblock %}
   </head>
   <body>
     {% include "wrappers/navigation.html" %}

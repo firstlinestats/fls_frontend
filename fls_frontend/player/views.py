@@ -1,8 +1,12 @@
 from __future__ import division
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+
+from player.forms import PlayerStatsFilter
 from player.models import Player
+
 from playbyplay.models import Game, PlayerGameStats
+from playbyplay.constants import gameTypes
 
 import helpers
 
@@ -23,13 +27,58 @@ def skaters(request):
     context = {
         'active_page' : 'players'
     }
+    context["form"] = PlayerStatsFilter()
     return render(request, 'player/skaters.html', context)
 
 
 def skatersTable(request):
+    currentSeason = Game.objects.latest("endDateTime").season
+    if request.method == 'GET':
+        getValues = dict(request.GET)
+        args = ()
+        kwargs = {
+            'gameState__in': [6, 7, 8]
+        }
+        if "date_start" in getValues and "date_end" in getValues:
+            try:
+                date_start = datetime.datetime.strptime(getValues["date_start"][0], "%m/%d/%Y").date()
+                date_end =  datetime.datetime.strptime(getValues["date_end"][0], "%m/%d/%Y").date()
+            except:
+                date_start = None
+                date_end = None
+        bySeason = False
+        if "divide_by_season" in getValues:
+            if "on" == getValues["divide_by_season"][0]:
+                bySeason = True
+        game_types = gameTypes
+        if "game_type" in getValues and len(getValues["game_type"]) > 0:
+            game_types = getValues["game_type"]
+        venues = None
+        if "venues" in getValues and len(getValues["venues"]) > 0:
+            venues = getValues["venues"]
+        teams = None
+        if "teams" in getValues and len(getValues["teams"]) > 0:
+            teams = getValues["teams"]
+        toi = None
+        if "toi" in getValues and len(getValues["toi"]) > 0:
+            try:
+                toi = int(getValues["toi"][0])
+            except:
+                pass
+        seasons = currentSeason
+        if "seasons" in getValues and len(getValues["seasons"]) > 0:
+            seasons = getValues["seasons"]
+        home_or_away = 2
+        if "home_or_away" in getValues and len(getValues["home_or_away"]) > 0:
+            try:
+                home_or_away = int(getValues["home_or_away"][0])
+            except:
+                pass
+        positions = None
+        if "position" in getValues and len(getValues["position"]) > 0:
+            positions = getValues["position"]
     context = {}
     today = datetime.date.today()
-    currentSeason = Game.objects.latest("endDateTime").season
     start = datetime.datetime.now()
     tgameStats = PlayerGameStats.objects\
         .values("player__fullName", "player__currentTeam__shortName",
@@ -42,7 +91,7 @@ def skatersTable(request):
             "shortHandedGoals", "shortHandedAssists", "blocked",
             "plusMinus", "evenTimeOnIce", "powerPlayTimeOnIce",
             "shortHandedTimeOnIce", "player__id")\
-        .filter(game__season=currentSeason)
+        .filter(game__season=currentSeason).iterator()
     gameStats = {}
     pid = "player__id"
     exclude = set([pid, "player__birthDate", "player__primaryPositionCode",

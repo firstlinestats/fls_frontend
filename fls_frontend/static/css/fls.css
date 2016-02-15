@@ -2,12 +2,18 @@
 	Main CSS file for FLS.com
 */
 .fls-logo {
-	height: 79px;
-	margin-top: -20px;
+	  height: 79px;
+	  margin-top: -20px;
 }
 .ms-container {
     margin: auto;
+    width: 100%;
 }
+
+.ms-container .ms-list {
+    height: 100px;
+}
+
 h3.filter-options {
     margin-top: 0px;
     margin-bottom: 0px;
@@ -27,13 +33,6 @@ h3.home-team {
 }
 .session-checkbox li label {
     font-weight: normal;
-}
-
-#ms-id_teams {
-    width: 300px;
-}
-#ms-id_seasons {
-    width: 300px;
 }
 
 .axis path,
@@ -89,4 +88,14 @@ h3.home-team {
   transform:rotate(90deg);
   -ms-transform:rotate(90deg); /* IE 9 */
   -webkit-transform:rotate(90deg); /* Safari and Chrome */
+}
+
+table.dataTable.dtr-inline.collapsed>tbody>tr.parent>td:first-child:before,
+table.dataTable.dtr-inline.collapsed>tbody>tr.parent>th:first-child:before {
+  background-color: #192277;
+}
+
+table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child:before,
+table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
+  background-color: #007B21;
 }
