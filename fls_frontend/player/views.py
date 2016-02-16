@@ -123,7 +123,7 @@ def skatersTable(request):
             seasonStats = {}
         pid = "player__id"
         exclude = set([pid, "player__birthDate", "player__primaryPositionCode",
-            "player__fullName", "player__currentTeam",
+            "player__fullName", "player__currentTeam", "team",
             "player__currentTeam__abbreviation", "player__id",
             "player__currentTeam__shortName", "player__height", "player__weight"])
         for t in tgameStats:
@@ -152,7 +152,10 @@ def skatersTable(request):
                             elif isinstance(gameStats[t[pid]][key], datetime.timedelta):
                                 gameStats[t[pid]][key] += datetime.timedelta(minutes=t[key].minute, seconds=t[key].second)
                             else:
-                                gameStats[t[pid]][key] += t[key]
+                                if gameStats[t[pid]][key] is not None:
+                                    gameStats[t[pid]][key] += t[key]
+                                else:
+                                    gameStats[t[pid]][key] = t[key]
         if bySeason is True:
             gameStats = {}
             for key in seasonStats:

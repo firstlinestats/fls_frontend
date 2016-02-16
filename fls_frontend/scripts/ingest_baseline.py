@@ -26,11 +26,11 @@ def main():
     #ingest_teams()
     #ingest_players()
     #ingest_games()
-    #ingest_pbp()
+    ingest_pbp()
     #getAwayShots()
     #getMissedShots()
     #findTeam()
-    findStandings(20152016)
+    #findStandings(20152016)
     #findBirthState()
 
 
@@ -225,22 +225,20 @@ def getAwayShots():
             game.awayShots = lineScore["teams"]["away"]["shotsOnGoal"]
             game.save()
 
+
+@transaction.atomic()
 def ingest_pbp():
     players = {}
-    playid = 0
+    playid = 249500
     tplayers = pmodels.Player.objects.all()
     for t in tplayers:
         players[t.id] = t
     tallpbps = pbpmodels.PlayByPlay.objects.all()
     allpbps = {}
-    for t in tallpbps:
-        allpbps[str(t.gamePk_id) + "|" + str(t.eventId)] = t
     tallpois = pbpmodels.PlayerOnIce.objects.all()
     allpois = {}
-    for t in tallpois:
-        allpois[str(t.play.id) + "|" + str(t.game.gamePk) + "|" + str(t.player.id)] = t
     count = 0
-    for game in pbpmodels.Game.objects.all().order_by("gamePk"):
+    for game in pbpmodels.Game.objects.filter(gamePk=2015020756).order_by("gamePk"):
         allshootouts = []
         allperiods = []
         allplaybyplay = []
@@ -294,7 +292,8 @@ def ingest_pbp():
                     p = pbpmodels.PlayByPlay()
                     p.id = playid
                     p.gamePk = game
-                    p.eventId = about["eventIdx"]
+                    p.eventId = about["eventId"]
+                    p.eventIdx = about["eventIdx"]
                     p.period = about["period"]
                     p.periodTime = about["periodTime"]
                     p.dateTime = about["dateTime"]
@@ -410,7 +409,7 @@ def ingest_pbp():
                 allpgss.extend(set_player_stats(ap, game.awayTeam, game, players, cperiod))
             except Exception as e:
                 print e
-                print "ISSUE WITH " + str(game.gamePk)
+                print "1ISSUE WITH " + str(game.gamePk)
         try:
             pbpmodels.Shootout.objects.bulk_create(allshootouts)
             pbpmodels.GamePeriod.objects.bulk_create(allperiods)
@@ -419,7 +418,7 @@ def ingest_pbp():
             pbpmodels.PlayerGameStats.objects.bulk_create(allpgss)
         except Exception as e:
             print e
-            print "ISSUE WITH " + str(game.gamePk)
+            print "2ISSUE WITH " + str(game.gamePk)
         
 
 def set_player_stats(pd, team, game, players, period):

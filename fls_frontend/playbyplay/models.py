@@ -63,6 +63,7 @@ class PlayByPlay(models.Model):
     id = models.IntegerField(primary_key=True)
     gamePk = models.ForeignKey(Game)
     eventId = models.IntegerField(null=True, blank=True)
+    eventIdx = models.IntegerField(null=True, blank=True)
     period = models.IntegerField()
     periodTime = models.TimeField()
     dateTime = models.DateTimeField(null=True, blank=True)
@@ -85,6 +86,24 @@ class PlayByPlay(models.Model):
 
     def __unicode__(self):
         return self.gamePk.homeTeam.shortName + " vs. " + self.gamePk.awayTeam.shortName + " on " + str(self.gamePk.dateTime) + " Play: " + str(self.eventId)
+
+
+class PlayByPlayPlayers(models.Model):
+    play = models.ForeignKey(PlayByPlay)
+    h1 = models.ForeignKey("player.Player", related_name="h1", blank=True, null=True)
+    h2 = models.ForeignKey("player.Player", related_name="h2", blank=True, null=True)
+    h3 = models.ForeignKey("player.Player", related_name="h3", blank=True, null=True)
+    h4 = models.ForeignKey("player.Player", related_name="h4", blank=True, null=True)
+    h5 = models.ForeignKey("player.Player", related_name="h5", blank=True, null=True)
+    h6 = models.ForeignKey("player.Player", related_name="h6", blank=True, null=True)
+    h7 = models.ForeignKey("player.Player", related_name="h7", blank=True, null=True)
+    a1 = models.ForeignKey("player.Player", related_name="a1", blank=True, null=True)
+    a2 = models.ForeignKey("player.Player", related_name="a2", blank=True, null=True)
+    a3 = models.ForeignKey("player.Player", related_name="a3", blank=True, null=True)
+    a4 = models.ForeignKey("player.Player", related_name="a4", blank=True, null=True)
+    a5 = models.ForeignKey("player.Player", related_name="a5", blank=True, null=True)
+    a6 = models.ForeignKey("player.Player", related_name="a6", blank=True, null=True)
+    a7 = models.ForeignKey("player.Player", related_name="a7", blank=True, null=True)
 
 
 class PlayerGameStats(models.Model):
