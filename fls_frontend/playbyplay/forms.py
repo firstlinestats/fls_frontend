@@ -22,10 +22,17 @@ class GamesFilter(forms.Form):
         queryset=Game.objects.values_list('season', flat=True).distinct(), 
         empty_label=None)
     
-    gameType = forms.MultipleChoiceField(
+    game_type = forms.MultipleChoiceField(
         widget=forms.CheckboxSelectMultiple(attrs={'class' : 'game-type-checkbox'}), 
         choices=constants.gameTypes, 
         initial=['PR', 'R', 'P', 'A'])
+
+    date_start = forms.DateField(label="Start Date",
+        widget=forms.DateInput(attrs={'class': 'form-control input-sm datepicker'}))
+
+    date_end = forms.DateField(label="End Date",
+        widget=forms.DateInput(attrs={'class': 'form-control input-sm datepicker'}))
+
 
 class GameStatsFilter(forms.Form):
     strength = forms.ChoiceField(widget=forms.Select(
@@ -33,7 +40,7 @@ class GameStatsFilter(forms.Form):
         label='Team Strength', 
         choices=constants.teamNames)
 
-    scoreSituation = forms.ChoiceField(
+    score_situation = forms.ChoiceField(
         widget=forms.Select(attrs={'class' : 'form-control input-sm'}), 
         label='Score Situation', 
         choices=constants.teamNames)

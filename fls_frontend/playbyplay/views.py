@@ -40,6 +40,17 @@ def game_list_table(request):
                 kwargs['venue__name'] = getValues['venues'][0]
         if 'gameType' in getValues:
             kwargs['gameType__in'] = getValues['gameType']
+        if "date_start" in getValues and "date_end" in getValues:
+            try:
+                date_start = datetime.datetime.strptime(getValues["date_start"][0], "%m/%d/%Y").date()
+                date_end =  datetime.datetime.strptime(getValues["date_end"][0], "%m/%d/%Y").date()
+
+                kwargs['dateTime__gte'] = date_start
+                kwargs['dateTime__lte'] = date_end
+            except:
+                date_start = None
+                date_end = None  
+  
 
         games = Game.objects\
             .values('dateTime', 'gameType', 'awayTeam', 'homeTeam', 'awayTeam__abbreviation', 
