@@ -238,7 +238,7 @@ def ingest_pbp():
     tallpois = pbpmodels.PlayerOnIce.objects.all()
     allpois = {}
     count = 0
-    for game in pbpmodels.Game.objects.filter(gamePk=2015020756).order_by("gamePk"):
+    for game in pbpmodels.Game.objects.all().order_by("gamePk"):
         allshootouts = []
         allperiods = []
         allplaybyplay = []
@@ -338,7 +338,7 @@ def ingest_pbp():
                         #allpois[str(p.id) + "|" + str(game.gamePk) + "|" + str(pp["player"]["id"])] = poi
                     playid += 1
                 # Update gameData
-                game.dateTime = gd["datetime"]["dateTime"]
+                """game.dateTime = gd["datetime"]["dateTime"]
                 game.endDateTime = gd["datetime"]["endDateTime"]
                 game.gameState = gd["status"]["codedGameState"]
                 # Get linescore information
@@ -406,16 +406,16 @@ def ingest_pbp():
                 hp = boxScore["teams"]["home"]["players"]
                 ap = boxScore["teams"]["away"]["players"]
                 allpgss.extend(set_player_stats(hp, game.homeTeam, game, players, cperiod))
-                allpgss.extend(set_player_stats(ap, game.awayTeam, game, players, cperiod))
+                allpgss.extend(set_player_stats(ap, game.awayTeam, game, players, cperiod))"""
             except Exception as e:
                 print e
                 print "1ISSUE WITH " + str(game.gamePk)
         try:
-            pbpmodels.Shootout.objects.bulk_create(allshootouts)
-            pbpmodels.GamePeriod.objects.bulk_create(allperiods)
+            #pbpmodels.Shootout.objects.bulk_create(allshootouts)
+            #pbpmodels.GamePeriod.objects.bulk_create(allperiods)
             pbpmodels.PlayByPlay.objects.bulk_create(allplaybyplay)
             pbpmodels.PlayerOnIce.objects.bulk_create(allplayers)
-            pbpmodels.PlayerGameStats.objects.bulk_create(allpgss)
+            #pbpmodels.PlayerGameStats.objects.bulk_create(allpgss)
         except Exception as e:
             print e
             print "2ISSUE WITH " + str(game.gamePk)

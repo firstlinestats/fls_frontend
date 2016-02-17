@@ -6,6 +6,12 @@ from urllib2 import Request, urlopen, URLError
 
 import api_urls
 
+headers = {
+    "User-Agent" : "Mozilla/5.0 (X11; U; Linux i686; " + \
+        "en-US; rv:1.9.2.24) Gecko/20111107 " + \
+        "Linux Mint/9 (Isadora) Firefox/3.6.24",
+}
+
 
 def get_game_timestamps(id=None):
     url = api_urls.GAME_TIMESTAMPS.replace("<gamePk>", str(id))
@@ -70,7 +76,7 @@ def get_schedule(id, season=None):
 
 
 def get_url(url):
-    request = Request(url)
+    request = Request(url, headers=headers)
     request.add_header('Accept-encoding', 'gzip')
     try:
         response = urlopen(request)
@@ -82,5 +88,5 @@ def get_url(url):
             html = response.read()
     except URLError, e:
         print e
-        return ""
+        return "{}"
     return html

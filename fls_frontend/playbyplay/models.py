@@ -88,24 +88,6 @@ class PlayByPlay(models.Model):
         return self.gamePk.homeTeam.shortName + " vs. " + self.gamePk.awayTeam.shortName + " on " + str(self.gamePk.dateTime) + " Play: " + str(self.eventId)
 
 
-class PlayByPlayPlayers(models.Model):
-    play = models.ForeignKey(PlayByPlay)
-    h1 = models.ForeignKey("player.Player", related_name="h1", blank=True, null=True)
-    h2 = models.ForeignKey("player.Player", related_name="h2", blank=True, null=True)
-    h3 = models.ForeignKey("player.Player", related_name="h3", blank=True, null=True)
-    h4 = models.ForeignKey("player.Player", related_name="h4", blank=True, null=True)
-    h5 = models.ForeignKey("player.Player", related_name="h5", blank=True, null=True)
-    h6 = models.ForeignKey("player.Player", related_name="h6", blank=True, null=True)
-    h7 = models.ForeignKey("player.Player", related_name="h7", blank=True, null=True)
-    a1 = models.ForeignKey("player.Player", related_name="a1", blank=True, null=True)
-    a2 = models.ForeignKey("player.Player", related_name="a2", blank=True, null=True)
-    a3 = models.ForeignKey("player.Player", related_name="a3", blank=True, null=True)
-    a4 = models.ForeignKey("player.Player", related_name="a4", blank=True, null=True)
-    a5 = models.ForeignKey("player.Player", related_name="a5", blank=True, null=True)
-    a6 = models.ForeignKey("player.Player", related_name="a6", blank=True, null=True)
-    a7 = models.ForeignKey("player.Player", related_name="a7", blank=True, null=True)
-
-
 class PlayerGameStats(models.Model):
     player = models.ForeignKey("player.Player")
     game = models.ForeignKey(Game)
@@ -164,7 +146,7 @@ class Shootout(models.Model):
     homeAttempts = models.IntegerField()
 
 
-class PlayerOnIce(models.Model):
+class PlayerInPlay(models.Model):
     play = models.ForeignKey(PlayByPlay)
     game = models.ForeignKey(Game)
     player = models.ForeignKey("player.Player")
@@ -173,6 +155,15 @@ class PlayerOnIce(models.Model):
     class Meta:
         verbose_name = "Player On Ice"
         verbose_name_plural = "Players On Ice"
+
+
+class PlayerOnIce(models.Model):
+    play = models.ForeignKey(PlayByPlay)
+    game = models.ForeignKey(Game)
+    player = models.ForeignKey("player.Player")
+
+    class Meta:
+        unique_together = ("play", "player", )
 
 
 class GameScratch(models.Model):
