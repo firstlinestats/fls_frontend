@@ -61,34 +61,33 @@ def try_live():
 def get_old():
     for game in pbpmodels.Game.objects.filter(gameState__in=[5, 6, 7]):
         eventIdxs = {}
-        pbps = pbpmodels.PlayByPlay.objects.filter(gamePk=game)
+        pbps = pbpmodels.PlayByPlay.objects.values("eventIdx", "id").filter(gamePk=game)
         for pbp in pbps:
-            if pbp.eventIdx not in eventIdxs:
-                eventIdxs[pbp.eventIdx] = pbp
+            if pbp["eventIdx"] not in eventIdxs:
+                eventIdxs[pbp["eventIdx"]] = pbp["id"]
         print game.gamePk
-        if not pbpmodels.PlayByPlayPlayers.objects.filter(play__in=pbps):
-            playerstats = pbpmodels.PlayerGameStats.objects.filter(game=game)
+        if not pbpmodels.PlayerOnIce.objects.filter(play_id__in=eventIdxs.values()).exists():
+            playerstats = pbpmodels.PlayerGameStats.objects.values("team_id", "player__fullName", "player_id").filter(game=game)
             hp = {}
             ap = {}
             for ps in playerstats:
-                player = ps.player
-                if ps.team == game.homeTeam:
-                    hp[player.fullName.upper()] = player.id
+                if ps["team_id"] == game.homeTeam_id:
+                    hp[ps["player__fullName"].upper()] = ps["player_id"]
                 else:
-                    ap[player.fullName.upper()] = player.id
-            goaliestats = pbpmodels.GoalieGameStats.objects.filter(game=game)
+                    ap[ps["player__fullName"].upper()] = ps["player_id"]
+            goaliestats = pbpmodels.GoalieGameStats.objects.values("team_id", "player__fullName", "player_id").filter(game=game)
             for gs in goaliestats:
-                goalie = gs.player
-                if gs.team == game.homeTeam:
-                    hp[goalie.fullName.upper()] = goalie.id
+                if gs["team_id"] == game.homeTeam_id:
+                    hp[gs["player__fullName"].upper()] = gs["player_id"]
                 else:
-                    ap[goalie.fullName.upper()] = goalie.id
+                    ap[gs["player__fullName"].upper()] = gs["player_id"]
             url = BASE + str(game.season) + "/PL0" + str(game.gamePk)[5:] + ".HTM"
             data = api_calls.get_url(url)
             soup = BeautifulSoup(data, 'html.parser')
             #table = soup.find('table', attrs={'id': 'GameInfo'})
             evens = soup.find_all('tr', attrs={'class': 'evenColor'})
             count = 0
+            saved = []
             with transaction.atomic():
                 for row in evens:
                     cols = row.find_all('td', recursive=False)
@@ -115,7 +114,7 @@ def get_old():
                         for anum in away:
                             if len(anum) > 0:
                                 pbpdict = {}
-                                pbpdict["play_id"] = eventIdxs[eventIdx].id
+                                pbpdict["play_id"] = eventIdxs[eventIdx]
                                 pbpdict["game_id"] = game.gamePk
                                 anum = int(anum)
                                 player = getPlayer(ap, awayNames, anum) #ap[awayNames[str(anum)]]
@@ -125,14 +124,15 @@ def get_old():
                                     acount += 1
                                     try:
                                         pbpp = pbpmodels.PlayerOnIce(**pbpdict)
-                                        pbpp.save()
+                                        #pbpp.save()
+                                        saved.append(pbpp)
                                     except TypeError:
                                         pass
                         hcount = 1
                         for hnum in home:
                             if len(hnum) > 0:
                                 pbpdict = {}
-                                pbpdict["play_id"] = eventIdxs[eventIdx].id
+                                pbpdict["play_id"] = eventIdxs[eventIdx]
                                 pbpdict["game_id"] = game.gamePk
                                 hnum = int(hnum)
                                 player = getPlayer(hp, homeNames, hnum)
@@ -142,9 +142,11 @@ def get_old():
                                     hcount += 1
                                     try:
                                         pbpp = pbpmodels.PlayerOnIce(**pbpdict)
-                                        pbpp.save()
+                                        #pbpp.save()
+                                        saved.append(pbpp)
                                     except TypeError:
                                         pass
+                pbpmodels.PlayerOnIce.objects.bulk_create(saved)
 
 
 def getPlayer(playerDict, number2name, currnum):

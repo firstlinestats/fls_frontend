@@ -13,6 +13,21 @@ register = template.Library()
 
 
 @register.filter()
+def get_cpm(player):
+    return player["cf"] - player["ca"]
+
+
+@register.filter()
+def get_fpm(player):
+    return player["ff"] - player["fa"]
+
+
+@register.filter
+def getkey(player, key):
+    return player[key]
+
+
+@register.filter()
 def birth(player):
     birthplace = ""
     if len(player.birthCity) > 0:

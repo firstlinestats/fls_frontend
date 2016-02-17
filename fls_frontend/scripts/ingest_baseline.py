@@ -229,15 +229,12 @@ def getAwayShots():
 @transaction.atomic()
 def ingest_pbp():
     players = {}
-    playid = 249500
+    playid = 0
     tplayers = pmodels.Player.objects.all()
     for t in tplayers:
         players[t.id] = t
-    tallpbps = pbpmodels.PlayByPlay.objects.all()
-    allpbps = {}
-    tallpois = pbpmodels.PlayerOnIce.objects.all()
-    allpois = {}
     count = 0
+    update = []
     for game in pbpmodels.Game.objects.all().order_by("gamePk"):
         allshootouts = []
         allperiods = []
@@ -286,9 +283,6 @@ def ingest_pbp():
                     pplayers = play["players"]
                     result = play["result"]
                     coordinates = play["coordinates"]
-                    #if str(game.gamePk) + "|" + str(about["eventIdx"]) in allpbps:
-                    #    p = allpbps[str(game.gamePk_id) + "|" + str(about["eventIdx"])]
-                    #else:
                     p = pbpmodels.PlayByPlay()
                     p.id = playid
                     p.gamePk = game
@@ -322,103 +316,41 @@ def ingest_pbp():
                     p.homeScore = lineScore["teams"]["home"]["goals"]
                     p.awayScore = lineScore["teams"]["away"]["goals"]
                     allplaybyplay.append(p)
-                    #p.save()
-                    #allpbps[str(p.gamePk_id) + "|" + str(p.eventId)] = p
+                    assist_found = False
                     for pp in pplayers:
-                        #if str(p.id) + "|" + str(game.gamePk) + "|" + str(pp["player"]["id"]) in allpois:
-                        #    poi = allpois[str(p.id) + "|" + str(game.gamePk) + "|" + str(pp["player"]["id"])]
-                        #else:
-                        poi = pbpmodels.PlayerOnIce()
+                        poi = pbpmodels.PlayerInPlay()
                         poi.play_id = playid
                         poi.game = game
                         poi.player_id = pp["player"]["id"]
-                        poi.player_type = pbphelper.get_player_type(pp["playerType"])
+                        if assist_found is True and pbphelper.get_player_type(pp["playerType"]) == 6:
+                            poi.player_type = 16
+                            poi.eventId = about["eventId"]
+                            poi.game_id = game.gamePk
+                            update.append(poi)
+                        else:
+                            poi.player_type = pbphelper.get_player_type(pp["playerType"])
+                            if poi.player_type == 6:
+                                assist_found = True
                         allplayers.append(poi)
-                        #poi.save()
-                        #allpois[str(p.id) + "|" + str(game.gamePk) + "|" + str(pp["player"]["id"])] = poi
                     playid += 1
                 # Update gameData
-                """game.dateTime = gd["datetime"]["dateTime"]
-                game.endDateTime = gd["datetime"]["endDateTime"]
-                game.gameState = gd["status"]["codedGameState"]
-                # Get linescore information
-                game.homeScore = lineScore["teams"]["home"]["goals"]
-                game.awayScore = lineScore["teams"]["away"]["goals"]
-                game.homeShots = lineScore["teams"]["home"]["shotsOnGoal"]
-                game.awayShots = lineScore["teams"]["away"]["shotsOnGoal"]
-                game.homeMissed = homeMissed
-                game.awayMissed = awayMissed
-                homeMissed = 0
-                awayMissed = 0
-                # Get period specific information
-                cperiod = 1
-                for period in lineScore["periods"]:
-                    #try:
-                    #    p = pbpmodels.GamePeriod.objects.get(game=game, period=period["num"])
-                    #except:
-                    p = pbpmodels.GamePeriod()
-                    p.game = game
-                    p.period = period["num"]
-                    if period["num"] > cperiod:
-                        cperiod = period["num"]
-                    p.startTime = period["startTime"]
-                    p.endTime = period["endTime"]
-                    p.homeScore = period["home"]["goals"]
-                    p.homeShots = period["home"]["shotsOnGoal"]
-                    p.awayScore = period["away"]["goals"]
-                    p.awayShots = period["away"]["shotsOnGoal"]
-                    allperiods.append(p)
-                    #p.save()
-                if lineScore["hasShootout"]:
-                    sinfo = lineScore["shootoutInfo"]
-                    try:
-                        s = pbpmodels.Shootout.objects.get(game=game)
-                    except:
-                        s = pbpmodels.Shootout()
-                        s.game = game
-                    s.awayScores = sinfo["away"]["scores"]
-                    s.awayAttempts = sinfo["away"]["attempts"]
-                    s.homeScores = sinfo["home"]["scores"]
-                    s.homeAttempts = sinfo["home"]["attempts"]
-                    allshootouts.append(s)
-                    #s.save()
-                # Get boxscore information
-                boxScore = ld["boxscore"]
-                home = boxScore["teams"]["home"]["teamStats"]["teamSkaterStats"]
-                away = boxScore["teams"]["away"]["teamStats"]["teamSkaterStats"]
-                game.homePIM = home["pim"]
-                game.awayPIM = away["pim"]
-                game.homePPGoals = home["powerPlayGoals"]
-                game.awayPPGoals = away["powerPlayGoals"]
-                game.homePPOpportunities = home["powerPlayOpportunities"]
-                game.awayPPOpportunities = away["powerPlayOpportunities"]
-                game.homeFaceoffPercentage = home["faceOffWinPercentage"]
-                game.awayFaceoffPercentage = away["faceOffWinPercentage"]
-                game.homeBlocked = home["blocked"]
-                game.awayBlocked = away["blocked"]
-                game.homeTakeaways = home["takeaways"]
-                game.awayTakeaways = away["takeaways"]
-                game.homeGiveaways = home["giveaways"]
-                game.awayGiveaways = away["giveaways"]
-                game.homeHits = home["hits"]
-                game.awayHits = away["hits"]
-                game.save()
-                hp = boxScore["teams"]["home"]["players"]
-                ap = boxScore["teams"]["away"]["players"]
-                allpgss.extend(set_player_stats(hp, game.homeTeam, game, players, cperiod))
-                allpgss.extend(set_player_stats(ap, game.awayTeam, game, players, cperiod))"""
             except Exception as e:
                 print e
                 print "1ISSUE WITH " + str(game.gamePk)
         try:
+            pass
             #pbpmodels.Shootout.objects.bulk_create(allshootouts)
             #pbpmodels.GamePeriod.objects.bulk_create(allperiods)
-            pbpmodels.PlayByPlay.objects.bulk_create(allplaybyplay)
-            pbpmodels.PlayerOnIce.objects.bulk_create(allplayers)
+            #pbpmodels.PlayByPlay.objects.bulk_create(allplaybyplay)
+            #pbpmodels.PlayerInPlay.objects.bulk_create(allplayers)
             #pbpmodels.PlayerGameStats.objects.bulk_create(allpgss)
         except Exception as e:
             print e
             print "2ISSUE WITH " + str(game.gamePk)
+    print "updating existing assists"
+    for u in update:
+        existing = pbpmodels.PlayerInPlay.objects.filter(play__eventId=u.eventId,
+            player_id=u.player_id, game_id=u.game_id).update(player_type=u.player_type)
         
 
 def set_player_stats(pd, team, game, players, period):
