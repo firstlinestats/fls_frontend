@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load website_extras %}
 <ul class="nav nav-tabs">
     <li class="active"><a href="#tableView" data-toggle="tab" aria-expanded="true">Table View</a></li>
     <li class=""><a href="#graphView" data-toggle="tab" aria-expanded="false">Graph View</a></li>
@@ -27,36 +28,23 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for team in teamData %}
                         <tr>
-                            <td><img height="17" width="17" src='{% with 'images/team/'|add:game.awayTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.awayTeam.id }}">{{ game.awayTeam.abbreviation }}</td>
-                            <td>{{ game.awayScore }}</td>
-                            <td>{{ game.awayShots }}</td>
-                            <td>{{ game.awayMSF }}</td>
-                            <td>{{ game.awayBSF }}</td>
-                            <td>{{ game.awayCorsi }}</td>
-                            <td>{{ game.awaySCF }}</td>
-                            <td>{{ game.awayHSCF }}</td>
-                            <td>{{ game.awayZSO }}</td>
-                            <td>{{ game.awayHIT }}</td>
-                            <td>{{ game.awayPN }}</td>
-                            <td>{{ game.awayFO_W }}</td>
-                            <td>{{ game.awayTOI }}</td>
+                            <td><img height="17" width="17" src='{% with 'images/team/'|add:team.team.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ team.team.id }}">{{ team.team.abbreviation }}</td>
+                            <td>{{ team.gf }}</td>
+                            <td>{{ team.sf }}</td>
+                            <td>{{ team.msf }}</td>
+                            <td>{{ team.bsf }}</td>
+                            <td>{{ team.cf }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ team|getkey:"hit+" }}</td>
+                            <td>{{ team.pn }}</td>
+                            <td>{{ team.fo_w }}</td>
+                            <td>{{ team.toi }}</td>
                         </tr>
-                        <tr>
-                            <td><img height="17" width="17" src='{% with 'images/team/'|add:game.homeTeam.abbreviation|add:'.png' as image_static %}{% static image_static %} {% endwith %}'><a href="/teams/{{ game.homeTeam.id }}">{{ game.homeTeam.abbreviation }}</td>
-                            <td>{{ game.homeScore }}</td>
-                            <td>{{ game.homeShots }}</td>
-                            <td>{{ game.homeMSF }}</td>
-                            <td>{{ game.homeBSF }}</td>
-                            <td>{{ game.homeCorsi }}</td>
-                            <td>{{ game.homeSCF }}</td>
-                            <td>{{ game.homeHSCF }}</td>
-                            <td>{{ game.homeZSO }}</td>
-                            <td>{{ game.homeHIT }}</td>
-                            <td>{{ game.homePN }}</td>
-                            <td>{{ game.homeFO_W }}</td>
-                            <td>{{ game.homeTOI }}</td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -103,7 +91,7 @@
         </div>
         <hr/>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 table-responsive">
                 <h3>Away Players</h3>
                 {% with tid="awayPlayers" players=game.awayPlayers %}
                 {% include "playbyplay/game_player_table.html" %}
@@ -112,7 +100,7 @@
         </div>
         <hr/>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 table-responsive">
                 <h3>Home Players</h3>
                 {% with tid="homePlayers" players=game.homePlayers %}
                 {% include "playbyplay/game_player_table.html" %}

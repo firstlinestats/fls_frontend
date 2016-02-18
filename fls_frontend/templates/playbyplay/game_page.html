@@ -98,7 +98,7 @@
             </div>
         </div>
     </div>
-    <div id="gameStatsContent" class="col-md-12" style="display: none">
+    <div id="gameStatsContent" class="col-md-12 table-responsive" style="display: none">
         
     </div>
 </div>
@@ -112,15 +112,34 @@
           url: "/games/game_tables?game_pk={{ game.gamePk }}"
         }).done(function(data) {
             $('#gameStatsContent').html(data);
-            /*
-            $('#gamesList').DataTable({
-                "iDisplayLength": 15,
-                "order": [
-                    [0, "desc"]
-                ]
-            });*/
             $('#tableLoading').toggle();
             $('#gameStatsContent').toggle();
+            $('#homePlayers').DataTable({
+                "paging":   false,
+                "searching": false,
+                "info":     false,
+                responsive: true,
+                fixedHeader: {
+                    header: true,
+                },
+                dom: 'lfrtiBp',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf'
+                ]
+            });
+            $('#awayPlayers').DataTable({
+                "paging":   false,
+                "searching": false,
+                "info":     false,
+                responsive: true,
+                fixedHeader: {
+                    header: true,
+                },
+                dom: 'lfrtiBp',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf'
+                ]
+            });
         });
 
         $('.filter-options img').click(function(e) {
@@ -134,16 +153,5 @@
             }
         });
     })
-/*
-$('#homePlayers').DataTable({
-"paging":   false,
-"searching": false,
-"info":     false
-});
-$('#awayPlayers').DataTable({
-"paging":   false,
-"searching": false,
-"info":     false
-});*/
 </script>
 {% endblock %}

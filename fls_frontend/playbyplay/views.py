@@ -89,6 +89,12 @@ def game_tables(request):
             playerStats = PlayerGameStats.objects.filter(game=gamePk).order_by('team', 'player__lastName')
             goalieStats = GoalieGameStats.objects.filter(game=gamePk)
 
+            teams = []
+            homeTeam = helper.init_team()
+            homeTeam["team"] = game.homeTeam
+            awayTeam = helper.init_team()
+            awayTeam["team"] = game.awayTeam
+
             players = {}
             for playerdata in playerStats:
                 player = helper.init_player()
@@ -115,15 +121,9 @@ def game_tables(request):
 
             pip_data = PlayerInPlay.objects.values("play_id",
                 "player_id", "player_type").filter(play__in=pbp)
-            inplay = {}
-            for p in pip_data:
-                player_id = p["player_id"]
-                play_id = p["play_id"]
-                player_type = p["player_type"]
-                if play_id not in inplay:
-                    inplay[play_id] = {}
-                inplay[play_id][player_id] = player_type
 
+            pos = 0
+            neg = 0
             for play in pbp:
                 play_id = play.id
                 team = play.team
@@ -131,29 +131,53 @@ def game_tables(request):
                     poi = onice[play_id]
                     play_type = play.playType
                     if play_type == "SHOT":
+                        if team == homeTeam["team"]:
+                            homeTeam["sf"] += 1
+                        else:
+                            awayTeam["sf"] += 1
                         for pid in poi:
                             if players[pid]["team"] == team:
                                 players[pid]["sf"] += 1
                             else:
                                 players[pid]["sa"] += 1
                     elif play_type == "GOAL":
+                        if team == homeTeam["team"]:
+                            homeTeam["gf"] += 1
+                            homeTeam["sf"] += 1
+                        else:
+                            awayTeam["gf"] += 1
+                            awayTeam["sf"] += 1
                         for pid in poi:
                             if players[pid]["team"] == team:
                                 players[pid]["gf"] += 1
                             else:
                                 players[pid]["ga"] += 1
                     elif play_type == "MISSED_SHOT":
+                        if team == homeTeam["team"]:
+                            homeTeam["msf"] += 1
+                        else:
+                            awayTeam["msf"] += 1
                         for pid in poi:
                             if players[pid]["team"] == team:
                                 players[pid]["msf"] += 1
                             else:
                                 players[pid]["msa"] += 1
                     elif play_type == "BLOCKED_SHOT":
+                        if team == homeTeam["team"]:
+                            homeTeam["bsf"] += 1
+                        else:
+                            awayTeam["bsf"] += 1
                         for pid in poi:
                             if players[pid]["team"] == team:
                                 players[pid]["bsf"] += 1
                             else:
                                 players[pid]["bsa"] += 1
+                    elif play_type == "FACEOFF":
+                        if play.ycoord > 0:
+                            pos += 1
+                        elif play.ycoord < 0:
+                            neg += 1
+            print pos, neg
             for pid in players:
                 player = players[pid]
                 player["cf"] = player["sf"] + player["msf"] + player["bsa"]
@@ -161,6 +185,30 @@ def game_tables(request):
                 player["ff"] = player["cf"] - player["bsa"]
                 player["fa"] = player["ca"] - player["bsf"]
                 player["g+-"] = player["gf"] - player["ga"]
+                player["p"] = player["g"] + player["a1"] + player["a2"]
+            homeTeam["cf"] = homeTeam["sf"] + homeTeam["gf"] + awayTeam["bsf"]
+            awayTeam["cf"] = awayTeam["sf"] + awayTeam["gf"] + homeTeam["bsf"]
+
+            # Get individual actions
+            type_sum = {1: "fo_w", 2: "fo_l", 3: "hit+", 4: "hit-",
+                5: "g", 6: "a1", 7: "icf", 8: "save", 9: "ab",
+                10: "pn-", 11: "pn+", 16: "a2"}
+            for pip in pip_data:
+                player = players[pip["player_id"]]
+                player_type = pip["player_type"]
+                if player_type == 1:
+                    if player["team"] == homeTeam["team"]:
+                        homeTeam["fo_w"] += 1
+                    else:
+                        awayTeam["fo_w"] += 1
+                elif player_type == 3:
+                    if player["team"] == homeTeam["team"]:
+                        homeTeam["hit+"] += 1
+                    else:
+                        awayTeam["hit+"] += 1
+                if player_type in type_sum:
+                    player[type_sum[player_type]] += 1
+
 
 
             #Goalie Stats
@@ -170,18 +218,13 @@ def game_tables(request):
             game.homePlayers = []
             game.awayPlayers = []
             for player in playerStats:
-                player.points = player.goals + player.assists
-                player.faceOffLost = player.faceoffTaken - player.faceOffWins
-                player.a1 = PlayerInPlay.objects.filter(play__in=pbp, player=player.player,
-                    player_type=6).count()
-                player.a2 = PlayerInPlay.objects.filter(play__in=pbp, player=player.player,
-                    player_type=16).count()
                 if player.team == game.homeTeam:
                     game.homePlayers.append(players[player.player_id])
                 elif player.team == game.awayTeam:
                     game.awayPlayers.append(players[player.player_id])
 
 
+            #TODO: Format to match play by play
             #PN
             game.awayPN = 0
             game.homePN = 0
@@ -192,6 +235,7 @@ def game_tables(request):
                     game.awayPN += 1
 
 
+            #TODO: Format to match play by play
             #Fenwick (FF)
             game.awayFF = game.awayShots + game.awayMissed
             game.homeFF = game.homeShots + game.homeMissed
@@ -225,7 +269,8 @@ def game_tables(request):
     except Game.DoesNotExist:
         raise Http404("Game does not exist!")
     return render(request, 'playbyplay/game_tables.html', {
-        'game': game
+        'game': game,
+        'teamData': [homeTeam, awayTeam],
     })
 
 
